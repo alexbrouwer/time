@@ -1,0 +1,34 @@
+{
+    "name": "par/time",
+    "description": "Temporal library",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "PAR\\Time\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PARTest\\Time\\": "test/"
+        }
+    },
+    "require": {
+        "php": "^7.2"
+    },
+    "require-dev": {
+        "par/coding-standard": "^1.0",
+        "par/maker": "^1.0",
+        "phpstan/phpstan": "^0.11.8",
+        "phpunit/phpunit": "^8.1",
+        "roave/security-advisories": "dev-master"
+    }
+}
