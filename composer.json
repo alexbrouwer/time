@@ -28,9 +28,13 @@
         }
     },
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "par/core": "^1.0",
+        "par/enum": "^1.0",
+        "webmozart/assert": "^1.4"
     },
     "require-dev": {
+        "mockery/mockery": "^1.2",
         "par/coding-standard": "^1.0",
         "par/maker": "^1.0",
         "phpstan/phpstan": "^0.11.8",

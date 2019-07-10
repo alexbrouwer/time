@@ -1,3 +1,4 @@
 /vendor
 /phpunit.xml
-/composer.phar
+/clover.xml
+/coveralls-upload.json
