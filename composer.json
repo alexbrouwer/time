@@ -31,7 +31,7 @@
         "php": "^7.2",
         "beberlei/assert": "^3.2",
         "par/core": "^1.1",
-        "par/enum": "^1.1"
+        "par/enum": "^1.2"
     },
     "require-dev": {
         "mockery/mockery": "^1.2",

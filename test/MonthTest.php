@@ -3,18 +3,39 @@
 namespace PARTest\Time;
 
 use PAR\Core\PHPUnit\CoreAssertions;
+use PAR\Enum\PHPUnit\EnumTestCase;
 use PAR\Time\Exception\InvalidArgumentException;
 use PAR\Time\Month;
-use PHPUnit\Framework\TestCase;
 
-class MonthTest extends TestCase
+class MonthTest extends EnumTestCase
 {
     use CoreAssertions;
 
+    public function testValues(): void
+    {
+        self::assertSame(
+            [
+                Month::JANUARY(),
+                Month::FEBRUARY(),
+                Month::MARCH(),
+                Month::APRIL(),
+                Month::MAY(),
+                Month::JUNE(),
+                Month::JULY(),
+                Month::AUGUST(),
+                Month::SEPTEMBER(),
+                Month::OCTOBER(),
+                Month::NOVEMBER(),
+                Month::DECEMBER(),
+            ],
+            Month::values()
+        );
+    }
+
     public function testGetValue(): void
     {
-        $this->assertSame(1, Month::JANUARY()->getValue());
-        $this->assertSame(12, Month::DECEMBER()->getValue());
+        self::assertSame(1, Month::JANUARY()->getValue());
+        self::assertSame(12, Month::DECEMBER()->getValue());
     }
 
     public function testOfThrowsInvalidArgumentExceptionWhenValueOutOfRange(): void
@@ -32,35 +53,35 @@ class MonthTest extends TestCase
     public function testPlus(): void
     {
         self::assertSameObject(Month::of(2), Month::JANUARY()->plus(1));
-        $this->assertSameObject(Month::of(3), Month::JANUARY()->plus(14));
-        $this->assertSameObject(Month::of(11), Month::JANUARY()->plus(-2));
-        $this->assertSameObject(Month::of(1), Month::JANUARY()->plus(0));
-        $this->assertSameObject(Month::of(3), Month::JANUARY()->plus(14));
+        self::assertSameObject(Month::of(3), Month::JANUARY()->plus(14));
+        self::assertSameObject(Month::of(11), Month::JANUARY()->plus(-2));
+        self::assertSameObject(Month::of(1), Month::JANUARY()->plus(0));
+        self::assertSameObject(Month::of(3), Month::JANUARY()->plus(14));
     }
 
     public function testMinus(): void
     {
-        $this->assertSameObject(Month::of(12), Month::JANUARY()->minus(1));
-        $this->assertSameObject(Month::of(4), Month::JANUARY()->minus(9));
-        $this->assertSameObject(Month::of(3), Month::JANUARY()->minus(-2));
-        $this->assertSameObject(Month::of(1), Month::JANUARY()->minus(0));
-        $this->assertSameObject(Month::of(11), Month::JANUARY()->minus(14));
+        self::assertSameObject(Month::of(12), Month::JANUARY()->minus(1));
+        self::assertSameObject(Month::of(4), Month::JANUARY()->minus(9));
+        self::assertSameObject(Month::of(3), Month::JANUARY()->minus(-2));
+        self::assertSameObject(Month::of(1), Month::JANUARY()->minus(0));
+        self::assertSameObject(Month::of(11), Month::JANUARY()->minus(14));
     }
 
     public function testFirstMonthOfQuarter(): void
     {
-        $this->assertSameObject(Month::JANUARY(), Month::JANUARY()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::JANUARY(), Month::FEBRUARY()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::JANUARY(), Month::MARCH()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::APRIL(), Month::APRIL()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::APRIL(), Month::MAY()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::APRIL(), Month::JUNE()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::JULY(), Month::JULY()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::JULY(), Month::AUGUST()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::JULY(), Month::SEPTEMBER()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::OCTOBER(), Month::OCTOBER()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::OCTOBER(), Month::NOVEMBER()->firstMonthOfQuarter());
-        $this->assertSameObject(Month::OCTOBER(), Month::DECEMBER()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JANUARY(), Month::JANUARY()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JANUARY(), Month::FEBRUARY()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JANUARY(), Month::MARCH()->firstMonthOfQuarter());
+        self::assertSameObject(Month::APRIL(), Month::APRIL()->firstMonthOfQuarter());
+        self::assertSameObject(Month::APRIL(), Month::MAY()->firstMonthOfQuarter());
+        self::assertSameObject(Month::APRIL(), Month::JUNE()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JULY(), Month::JULY()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JULY(), Month::AUGUST()->firstMonthOfQuarter());
+        self::assertSameObject(Month::JULY(), Month::SEPTEMBER()->firstMonthOfQuarter());
+        self::assertSameObject(Month::OCTOBER(), Month::OCTOBER()->firstMonthOfQuarter());
+        self::assertSameObject(Month::OCTOBER(), Month::NOVEMBER()->firstMonthOfQuarter());
+        self::assertSameObject(Month::OCTOBER(), Month::DECEMBER()->firstMonthOfQuarter());
     }
 
     /**
@@ -72,7 +93,7 @@ class MonthTest extends TestCase
      */
     public function testFirstDayOfYear(Month $month, bool $leapYear, int $expected): void
     {
-        $this->assertSame($expected, $month->firstDayOfYear($leapYear));
+        self::assertSame($expected, $month->firstDayOfYear($leapYear));
     }
 
     public function provideFirstDayOfYearValues(): array

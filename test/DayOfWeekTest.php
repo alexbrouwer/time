@@ -2,16 +2,35 @@
 
 namespace PARTest\Time;
 
+use PAR\Core\PHPUnit\CoreAssertions;
+use PAR\Enum\PHPUnit\EnumTestCase;
 use PAR\Time\DayOfWeek;
 use PAR\Time\Exception\InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 
-class DayOfWeekTest extends TestCase
+class DayOfWeekTest extends EnumTestCase
 {
+    use CoreAssertions;
+
+    public function testValues(): void
+    {
+        self::assertSame(
+            [
+                DayOfWeek::MONDAY(),
+                DayOfWeek::TUESDAY(),
+                DayOfWeek::WEDNESDAY(),
+                DayOfWeek::THURSDAY(),
+                DayOfWeek::FRIDAY(),
+                DayOfWeek::SATURDAY(),
+                DayOfWeek::SUNDAY(),
+            ],
+            DayOfWeek::values()
+        );
+    }
+
     public function testGetValue(): void
     {
-        $this->assertSame(1, DayOfWeek::MONDAY()->getValue());
-        $this->assertSame(7, DayOfWeek::SUNDAY()->getValue());
+        self::assertSame(1, DayOfWeek::MONDAY()->getValue());
+        self::assertSame(7, DayOfWeek::SUNDAY()->getValue());
     }
 
     public function testOfThrowsInvalidArgumentExceptionWhenValueOutOfRange(): void
@@ -23,24 +42,24 @@ class DayOfWeekTest extends TestCase
 
     public function testOf(): void
     {
-        $this->assertSame(DayOfWeek::TUESDAY(), DayOfWeek::of(2));
+        self::assertSameObject(DayOfWeek::TUESDAY(), DayOfWeek::of(2));
     }
 
     public function testPlus(): void
     {
-        $this->assertSame(DayOfWeek::TUESDAY(), DayOfWeek::MONDAY()->plus(1));
-        $this->assertSame(DayOfWeek::WEDNESDAY(), DayOfWeek::MONDAY()->plus(9));
-        $this->assertSame(DayOfWeek::SATURDAY(), DayOfWeek::MONDAY()->plus(-2));
-        $this->assertSame(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->plus(0));
-        $this->assertSame(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->plus(14));
+        self::assertSameObject(DayOfWeek::TUESDAY(), DayOfWeek::MONDAY()->plus(1));
+        self::assertSameObject(DayOfWeek::WEDNESDAY(), DayOfWeek::MONDAY()->plus(9));
+        self::assertSameObject(DayOfWeek::SATURDAY(), DayOfWeek::MONDAY()->plus(-2));
+        self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->plus(0));
+        self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->plus(14));
     }
 
     public function testMinus(): void
     {
-        $this->assertSame(DayOfWeek::SUNDAY(), DayOfWeek::MONDAY()->minus(1));
-        $this->assertSame(DayOfWeek::SATURDAY(), DayOfWeek::MONDAY()->minus(9));
-        $this->assertSame(DayOfWeek::WEDNESDAY(), DayOfWeek::MONDAY()->minus(-2));
-        $this->assertSame(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(0));
-        $this->assertSame(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(14));
+        self::assertSameObject(DayOfWeek::SUNDAY(), DayOfWeek::MONDAY()->minus(1));
+        self::assertSameObject(DayOfWeek::SATURDAY(), DayOfWeek::MONDAY()->minus(9));
+        self::assertSameObject(DayOfWeek::WEDNESDAY(), DayOfWeek::MONDAY()->minus(-2));
+        self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(0));
+        self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(14));
     }
 }

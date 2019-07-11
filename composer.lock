@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e199ba3607deb74fe085737a765bcd9",
+    "content-hash": "a511b037c0a57829948db2bba2f9621f",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -106,16 +106,16 @@
         },
         {
             "name": "par/enum",
-            "version": "1.1.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-addition-repository/enum.git",
-                "reference": "f4026cd63e792e6a5e42043c8db432669b30ec14"
+                "reference": "923025b37ab3d442febe429dbdce9745df3d0f45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-addition-repository/enum/zipball/f4026cd63e792e6a5e42043c8db432669b30ec14",
-                "reference": "f4026cd63e792e6a5e42043c8db432669b30ec14",
+                "url": "https://api.github.com/repos/php-addition-repository/enum/zipball/923025b37ab3d442febe429dbdce9745df3d0f45",
+                "reference": "923025b37ab3d442febe429dbdce9745df3d0f45",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,7 @@
                 }
             ],
             "description": "Enum implementation",
-            "time": "2019-07-10T13:05:24+00:00"
+            "time": "2019-07-11T08:19:47+00:00"
         }
     ],
     "packages-dev": [
