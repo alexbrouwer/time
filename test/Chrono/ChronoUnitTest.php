@@ -68,19 +68,19 @@ class ChronoUnitTest extends EnumTestCase
 
     public function testIsDurationEstimated(): void
     {
-        self::assertFalse(ChronoUnit::MICROS()->isDateBased());
-        self::assertFalse(ChronoUnit::MILLIS()->isDateBased());
-        self::assertFalse(ChronoUnit::SECONDS()->isDateBased());
-        self::assertFalse(ChronoUnit::MINUTES()->isDateBased());
-        self::assertFalse(ChronoUnit::HOURS()->isDateBased());
-        self::assertFalse(ChronoUnit::HALF_DAYS()->isDateBased());
-        self::assertTrue(ChronoUnit::DAYS()->isDateBased());
-        self::assertTrue(ChronoUnit::WEEKS()->isDateBased());
-        self::assertTrue(ChronoUnit::MONTHS()->isDateBased());
-        self::assertTrue(ChronoUnit::YEARS()->isDateBased());
-        self::assertTrue(ChronoUnit::DECADES()->isDateBased());
-        self::assertTrue(ChronoUnit::CENTURIES()->isDateBased());
-        self::assertTrue(ChronoUnit::MILLENIA()->isDateBased());
-        self::assertFalse(ChronoUnit::FOREVER()->isDateBased());
+        self::assertFalse(ChronoUnit::MICROS()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::MILLIS()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::SECONDS()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::MINUTES()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::HOURS()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::HALF_DAYS()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::DAYS()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::WEEKS()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::MONTHS()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::YEARS()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::DECADES()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::CENTURIES()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::MILLENIA()->isDurationEstimated());
+        self::assertFalse(ChronoUnit::FOREVER()->isDurationEstimated());
     }
 }
