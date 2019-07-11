@@ -2,7 +2,9 @@
 
 namespace PAR\Time;
 
+use DateTimeInterface;
 use PAR\Enum\Enum;
+use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
 
 /**
@@ -133,5 +135,19 @@ final class DayOfWeek extends Enum
     public function minus(int $days): self
     {
         return $this->plus($days * -1);
+    }
+
+    /**
+     * Obtains an instance of DayOfWeek from a native DateTime or DateTimeImmutable object.
+     *
+     * @param DateTimeInterface $dateTime
+     *
+     * @return DayOfWeek
+     */
+    public static function fromNative(DateTimeInterface $dateTime): self
+    {
+        $dayOfWeek = ChronoField::DAY_OF_WEEK()->getFromNative($dateTime);
+
+        return self::of($dayOfWeek);
     }
 }

@@ -62,4 +62,9 @@ class DayOfWeekTest extends EnumTestCase
         self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(0));
         self::assertSameObject(DayOfWeek::MONDAY(), DayOfWeek::MONDAY()->minus(14));
     }
+
+    public function testFromNative(): void
+    {
+        $this->markTestIncomplete('Waiting for Factory::create availabily');
+    }
 }
