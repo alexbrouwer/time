@@ -3,6 +3,7 @@
 namespace PAR\Time\Chrono;
 
 use PAR\Enum\Enum;
+use PAR\Time\Temporal\TemporalUnit;
 
 /**
  * A standard set of date periods units.
@@ -22,7 +23,7 @@ use PAR\Enum\Enum;
  * @method static self MILLENIA()
  * @method static self FOREVER()
  */
-final class ChronoUnit extends Enum
+final class ChronoUnit extends Enum implements TemporalUnit
 {
     protected const MICROS = [false, true];
     protected const MILLIS = [false, true];
@@ -60,11 +61,7 @@ final class ChronoUnit extends Enum
     }
 
     /**
-     * Checks if this unit is a date unit.
-     *
-     * All units from days to millenia inclusive are date-based. Time-based units and FOREVER return false.
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function isDateBased(): bool
     {
@@ -72,11 +69,7 @@ final class ChronoUnit extends Enum
     }
 
     /**
-     * Checks if this unit is a time unit.
-     *
-     * All units from micros to half-days inclusive are time-based. Date-based units and FOREVER return false.
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function isTimeBased(): bool
     {
@@ -84,18 +77,11 @@ final class ChronoUnit extends Enum
     }
 
     /**
-     * Checks if the duration of the unit is an estimate.
-     *
-     * All time units in this class are considered to be accurate, while all date units in this class are considered to
-     * be estimated.
-     *
-     * This definition ignores leap seconds, but considers that Days vary due to daylight saving time and months have
-     * different lengths.
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function isDurationEstimated(): bool
     {
         return $this->isDateBased();
     }
+
 }
