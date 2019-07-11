@@ -4,8 +4,10 @@ namespace PARTest\Time;
 
 use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Enum\PHPUnit\EnumTestCase;
+use PAR\Time\Chrono\ChronoField;
 use PAR\Time\DayOfWeek;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Factory;
 
 class DayOfWeekTest extends EnumTestCase
@@ -69,5 +71,23 @@ class DayOfWeekTest extends EnumTestCase
         $dt = Factory::createDate(2018, 3, 4);
 
         self::assertSameObject(DayOfWeek::SUNDAY(), DayOfWeek::fromNative($dt));
+    }
+
+    public function testSupportsField(): void
+    {
+        self::assertTrue(DayOfWeek::MONDAY()->supportsField(ChronoField::DAY_OF_WEEK()));
+        self::assertFalse(DayOfWeek::MONDAY()->supportsField(ChronoField::DAY_OF_MONTH()));
+    }
+
+    public function testGetForSupportedField(): void
+    {
+        self::assertSame(3, DayOfWeek::WEDNESDAY()->get(ChronoField::DAY_OF_WEEK()));
+    }
+
+    public function testGetForUnsupportedFieldThrowUnsupportedTemporalTypeException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+
+        DayOfWeek::WEDNESDAY()->get(ChronoField::DAY_OF_MONTH());
     }
 }

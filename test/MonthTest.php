@@ -4,7 +4,9 @@ namespace PARTest\Time;
 
 use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Enum\PHPUnit\EnumTestCase;
+use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Factory;
 use PAR\Time\Month;
 
@@ -132,5 +134,23 @@ class MonthTest extends EnumTestCase
         $dt = Factory::createDate(2018, 3, 4);
 
         self::assertSameObject(Month::MARCH(), Month::fromNative($dt));
+    }
+
+    public function testSupportsField(): void
+    {
+        self::assertTrue(Month::JUNE()->supportsField(ChronoField::MONTH_OF_YEAR()));
+        self::assertFalse(Month::JUNE()->supportsField(ChronoField::DAY_OF_MONTH()));
+    }
+
+    public function testGetForSupportedField(): void
+    {
+        self::assertSame(4, Month::APRIL()->get(ChronoField::MONTH_OF_YEAR()));
+    }
+
+    public function testGetForUnsupportedFieldThrowUnsupportedTemporalTypeException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+
+        Month::APRIL()->get(ChronoField::DAY_OF_MONTH());
     }
 }

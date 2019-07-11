@@ -6,6 +6,9 @@ use DateTimeInterface;
 use PAR\Enum\Enum;
 use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
+use PAR\Time\Temporal\TemporalAccessor;
+use PAR\Time\Temporal\TemporalField;
 
 /**
  * A day-of-week, such as 'Tuesday'.
@@ -26,7 +29,7 @@ use PAR\Time\Exception\InvalidArgumentException;
  * @method static self SATURDAY()
  * @method static self SUNDAY()
  */
-final class DayOfWeek extends Enum
+final class DayOfWeek extends Enum implements TemporalAccessor
 {
     private const MIN_VALUE = 1;
     private const MAX_VALUE = 7;
@@ -149,5 +152,35 @@ final class DayOfWeek extends Enum
         $dayOfWeek = ChronoField::DAY_OF_WEEK()->getFromNative($dateTime);
 
         return self::of($dayOfWeek);
+    }
+
+    /**
+     * Checks if the specified field is supported.
+     *
+     * This checks if this day-of-week can be queried for the specified field. If false, then calling the range and get
+     * methods will throw an exception.
+     *
+     * If the field is ChronoField::DAY_OF_WEEK() then this method returns true. All other ChronoField instances will
+     * return false.
+     *
+     * @param TemporalField $field
+     *
+     * @return bool
+     */
+    public function supportsField(TemporalField $field): bool
+    {
+        return ChronoField::DAY_OF_WEEK()->equals($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(TemporalField $field): int
+    {
+        if ($this->supportsField($field)) {
+            return $this->getValue();
+        }
+
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 }

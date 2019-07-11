@@ -6,6 +6,9 @@ use DateTimeInterface;
 use PAR\Enum\Enum;
 use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
+use PAR\Time\Temporal\TemporalAccessor;
+use PAR\Time\Temporal\TemporalField;
 
 /**
  * A month-of-year, such as 'July'.
@@ -32,7 +35,7 @@ use PAR\Time\Exception\InvalidArgumentException;
  * @method static self NOVEMBER()
  * @method static self DECEMBER()
  */
-final class Month extends Enum
+final class Month extends Enum implements TemporalAccessor
 {
     private const MIN_VALUE = 1;
     private const MAX_VALUE = 12;
@@ -75,7 +78,7 @@ final class Month extends Enum
      *
      * @param DateTimeInterface $dateTime
      *
-     * @return DayOfWeek
+     * @return Month
      */
     public static function fromNative(DateTimeInterface $dateTime): self
     {
@@ -194,15 +197,18 @@ final class Month extends Enum
     }
 
     /**
-     * Gets the day-of-year corresponding to the first day of this month.
+     * Gets the length of this month in days.
      *
-     * This returns the day-of-year that this month begins on, using the leap year flag to determine the length of February.
+     * This takes a flag to determine whether to return the length for a leap year or not.
+     *
+     * February has 28 days in a standard year and 29 days in a leap year. April, June, September and November have 30
+     * days. All other months have 31 days.
      *
      * @param bool $leapYear True if the length is required for a leap year
      *
      * @return int
      */
-    public function firstDayOfYear(bool $leapYear = false): int
+    public function length(bool $leapYear): int
     {
         $days = [
             31,
@@ -219,13 +225,58 @@ final class Month extends Enum
             31,
         ];
 
+        return $days[$this->ordinal()];
+    }
+
+    /**
+     * Gets the day-of-year corresponding to the first day of this month.
+     *
+     * This returns the day-of-year that this month begins on, using the leap year flag to determine the length of February.
+     *
+     * @param bool $leapYear True if the length is required for a leap year
+     *
+     * @return int
+     */
+    public function firstDayOfYear(bool $leapYear = false): int
+    {
         $firstDay = 1;
-        $ordinal = 0;
-        while ($this->ordinal() > $ordinal) {
-            $firstDay += $days[$ordinal];
-            $ordinal++;
+
+        foreach (self::values() as $month) {
+            /** @var self $month */
+            if ($month->compareTo($this) < 0) {
+                $firstDay += $month->length($leapYear);
+            }
         }
 
         return $firstDay;
+    }
+
+    /**
+     * Checks if the specified field is supported.
+     *
+     * This checks if this month-of-year can be queried for the specified field. If false, then calling the range and
+     * get methods will throw an exception.
+     *
+     * If the field is ChronoField::MONTH_OF_YEAR() then this method returns true. All other ChronoField instances will
+     * return false.
+     *
+     * @param TemporalField $field
+     *
+     * @return bool
+     */
+    public function supportsField(TemporalField $field): bool
+    {
+        return ChronoField::MONTH_OF_YEAR()->equals($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(TemporalField $field): int
+    {
+        if ($this->supportsField($field)) {
+            return $this->getValue();
+        }
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 }
