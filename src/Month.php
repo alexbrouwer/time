@@ -96,7 +96,7 @@ final class Month extends Enum
      */
     public static function of(int $month): self
     {
-        Assertion::range($month, self::MIN_VALUE, self::MAX_VALUE);
+        Assert::range($month, self::MIN_VALUE, self::MAX_VALUE);
 
         return self::valueOf(self::VALUE_MAP[$month]);
     }

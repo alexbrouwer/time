@@ -3,7 +3,7 @@
 namespace PAR\Time\Temporal;
 
 use PAR\Core\ObjectInterface;
-use PAR\Time\Assertion;
+use PAR\Time\Assert;
 use PAR\Time\Exception\InvalidArgumentException;
 
 class ValueRange implements ObjectInterface
@@ -90,9 +90,9 @@ class ValueRange implements ObjectInterface
      */
     private function __construct(int $smallestMinimum, int $largestMinimum, int $smallestMaximum, int $largestMaximum)
     {
-        Assertion::lessOrEqualThan($smallestMinimum, $largestMinimum);
-        Assertion::lessThan($largestMinimum, $smallestMaximum);
-        Assertion::lessOrEqualThan($largestMinimum, $largestMaximum);
+        Assert::lessThanEq($smallestMinimum, $largestMinimum);
+        Assert::lessThan($largestMinimum, $smallestMaximum);
+        Assert::lessThanEq($largestMinimum, $largestMaximum);
 
         $this->smallestMinimum = min($smallestMinimum, $largestMinimum);
         $this->largestMinimum = max($largestMinimum, $smallestMinimum);

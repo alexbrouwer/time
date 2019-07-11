@@ -82,7 +82,7 @@ final class DayOfWeek extends Enum
      */
     public static function of(int $dayOfWeek): self
     {
-        Assertion::range($dayOfWeek, self::MIN_VALUE, self::MAX_VALUE);
+        Assert::range($dayOfWeek, self::MIN_VALUE, self::MAX_VALUE);
 
         return self::valueOf(self::VALUE_MAP[$dayOfWeek]);
     }
