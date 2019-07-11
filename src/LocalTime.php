@@ -3,9 +3,9 @@
 namespace PAR\Time;
 
 /**
- * A date without a time-zone in the ISO-8601 calendar system, such as 2007-12-03.
+ * A time without a time-zone in the ISO-8601 calendar system, such as 10:15:30.
  */
-final class LocalDate
+final class LocalTime
 {
 
 }
