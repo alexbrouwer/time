@@ -4,6 +4,9 @@ namespace PAR\Time\Chrono;
 
 use DateTimeInterface;
 use PAR\Enum\Enum;
+use PAR\Time\Temporal\TemporalAccessor;
+use PAR\Time\Temporal\TemporalField;
+use PAR\Time\Temporal\ValueRange;
 
 /**
  * A standard set of fields.
@@ -14,11 +17,11 @@ use PAR\Enum\Enum;
  * @method static self DAY_OF_MONTH()
  * @method static self MONTH_OF_YEAR()
  */
-final class ChronoField extends Enum
+final class ChronoField extends Enum implements TemporalField
 {
-    protected const DAY_OF_WEEK = ['DAYS', 'WEEKS', 'N'];
-    protected const DAY_OF_MONTH = ['DAYS', 'MONTHS', 'j'];
-    protected const MONTH_OF_YEAR = ['MONTHS', 'YEARS', 'n'];
+    protected const DAY_OF_WEEK = ['DAYS', 'WEEKS', [1, 7], 'N'];
+    protected const DAY_OF_MONTH = ['DAYS', 'MONTHS', [1, 28, 31], 'j'];
+    protected const MONTH_OF_YEAR = ['MONTHS', 'YEARS', [1, 12], 'n'];
 
     /**
      * @var string
@@ -36,24 +39,26 @@ final class ChronoField extends Enum
     private $format;
 
     /**
-     * @param string $baseUnit
-     * @param string $rangeUnit
-     * @param string $format
+     * @var array
      */
-    protected function __construct(string $baseUnit, string $rangeUnit, string $format)
+    private $rangeValues;
+
+    /**
+     * @param string     $baseUnit
+     * @param string     $rangeUnit
+     * @param array<int> $rangeValues
+     * @param string     $format
+     */
+    protected function __construct(string $baseUnit, string $rangeUnit, array $rangeValues, string $format)
     {
         $this->baseUnit = $baseUnit;
         $this->rangeUnit = $rangeUnit;
+        $this->rangeValues = $rangeValues;
         $this->format = $format;
     }
 
     /**
-     * Gets the unit that the field is measured in.
-     *
-     * The unit of the field is the period that varies within the range. For example, in the field 'MonthOfYear', the
-     * unit is 'Months'.
-     *
-     * @see ChronoField::getRangeUnit
+     * @inheritDoc
      *
      * @return ChronoUnit
      */
@@ -63,12 +68,7 @@ final class ChronoField extends Enum
     }
 
     /**
-     * Gets the range that the field is bound by.
-     *
-     * The range of the field is the period that the field varies within. For example, in the field 'MonthOfYear', the
-     * range is 'Years'.
-     *
-     * @see ChronoField::getBaseUnit
+     * @inheritDoc
      *
      * @return ChronoUnit
      */
@@ -78,12 +78,38 @@ final class ChronoField extends Enum
     }
 
     /**
-     * @param DateTimeInterface $dateTime
-     *
-     * @return int
+     * @inheritDoc
      */
     public function getFromNative(DateTimeInterface $dateTime): int
     {
         return (int)$dateTime->format($this->format);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function range(): ValueRange
+    {
+        if (empty($this->rangeValues)) {
+            $this->rangeValues = [PHP_INT_MIN, PHP_INT_MAX];
+        }
+
+        $method = 'ofFixed';
+        if (count($this->rangeValues) >= 4) {
+            $method = 'ofVariable';
+        }
+        if (count($this->rangeValues) >= 3) {
+            $method = 'ofVariableMax';
+        }
+
+        return forward_static_call_array([ValueRange::class, $method], $this->rangeValues);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSupportedBy(TemporalAccessor $temporalAccessor): bool
+    {
+        return $temporalAccessor->supportsField($this);
     }
 }
