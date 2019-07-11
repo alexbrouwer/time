@@ -5,6 +5,7 @@ namespace PARTest\Time;
 use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Enum\PHPUnit\EnumTestCase;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Factory;
 use PAR\Time\Month;
 
 class MonthTest extends EnumTestCase
@@ -124,5 +125,12 @@ class MonthTest extends EnumTestCase
             [Month::DECEMBER(), false, 335],
             [Month::DECEMBER(), true, 336],
         ];
+    }
+
+    public function testFromNative(): void
+    {
+        $dt = Factory::createDate(2018, 3, 4);
+
+        self::assertSameObject(Month::MARCH(), Month::fromNative($dt));
     }
 }

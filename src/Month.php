@@ -2,7 +2,9 @@
 
 namespace PAR\Time;
 
+use DateTimeInterface;
 use PAR\Enum\Enum;
+use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
 
 /**
@@ -67,6 +69,20 @@ final class Month extends Enum
      * @var int
      */
     private $value;
+
+    /**
+     * Obtains an instance of DayOfWeek from a native DateTime or DateTimeImmutable object.
+     *
+     * @param DateTimeInterface $dateTime
+     *
+     * @return DayOfWeek
+     */
+    public static function fromNative(DateTimeInterface $dateTime): self
+    {
+        $monthOfYear = ChronoField::MONTH_OF_YEAR()->getFromNative($dateTime);
+
+        return self::of($monthOfYear);
+    }
 
     /**
      * @param int $value
