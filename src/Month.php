@@ -150,4 +150,66 @@ final class Month extends Enum
     {
         return $this->plus($months * -1);
     }
+
+    /**
+     * Gets the month corresponding to the first month of this quarter.
+     *
+     * The year can be divided into four quarters. This method returns the first month of the quarter for the base
+     * month. January, February and March return January. April, May and June return April. July, August and
+     * September return July. October, November and December return October.
+     *
+     * @return Month
+     */
+    public function firstMonthOfQuarter(): self
+    {
+        if ($this->getValue() >= 10) {
+            return self::OCTOBER();
+        }
+
+        if ($this->getValue() >= 7) {
+            return self::JULY();
+        }
+
+        if ($this->getValue() >= 4) {
+            return self::APRIL();
+        }
+
+        return self::JANUARY();
+    }
+
+    /**
+     * Gets the day-of-year corresponding to the first day of this month.
+     *
+     * This returns the day-of-year that this month begins on, using the leap year flag to determine the length of February.
+     *
+     * @param bool $leapYear True if the length is required for a leap year
+     *
+     * @return int
+     */
+    public function firstDayOfYear(bool $leapYear = false): int
+    {
+        $days = [
+            31,
+            $leapYear ? 29 : 28,
+            31,
+            30,
+            31,
+            30,
+            31,
+            31,
+            30,
+            31,
+            30,
+            31,
+        ];
+
+        $firstDay = 1;
+        $ordinal = 0;
+        while ($this->ordinal() > $ordinal) {
+            $firstDay += $days[$ordinal];
+            $ordinal++;
+        }
+
+        return $firstDay;
+    }
 }
