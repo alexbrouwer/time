@@ -11,11 +11,14 @@ use PAR\Enum\Enum;
  * This set of fields provide field-based access to manipulate a date, time or date-time.
  *
  * @method static self DAY_OF_WEEK()
+ * @method static self DAY_OF_MONTH()
+ * @method static self MONTH_OF_YEAR()
  */
 final class ChronoField extends Enum
 {
     protected const DAY_OF_WEEK = ['DAYS', 'WEEKS', 'N'];
     protected const DAY_OF_MONTH = ['DAYS', 'MONTHS', 'j'];
+    protected const MONTH_OF_YEAR = ['MONTHS', 'YEARS', 'n'];
 
     /**
      * @var string
