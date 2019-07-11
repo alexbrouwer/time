@@ -197,4 +197,31 @@ class ValueRange implements ObjectInterface
     {
         return $value >= $this->getMinimum() && $value <= $this->getMaximum();
     }
+
+    /**
+     * Checks that the specified value is valid.
+     *
+     * This validates that the vlaue is within the valid range of values
+     *
+     * @param int           $value The value to check
+     * @param TemporalField $field The field the value comes from, only used to improve exception message
+     *
+     * @return int The value that was passed in.
+     * @throws InvalidArgumentException If value is outside of range
+     */
+    public function checkValidValue(int $value, TemporalField $field): int
+    {
+        if ($this->isValidValue($value)) {
+            return $value;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Expected a value within range %s for %s, got %d',
+                $this->toString(),
+                $field->toString(),
+                $value
+            )
+        );
+    }
 }

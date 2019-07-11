@@ -2,7 +2,9 @@
 
 namespace PARTest\Time\Temporal;
 
+use Mockery;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Temporal\TemporalField;
 use PAR\Time\Temporal\ValueRange;
 use PHPUnit\Framework\TestCase;
 
@@ -106,5 +108,29 @@ class ValueRangeTest extends TestCase
         $this->assertTrue($range->isValidValue(2));
         $this->assertTrue($range->isValidValue(3));
         $this->assertFalse($range->isValidValue(4));
+    }
+
+    public function testCheckValidValue(): void
+    {
+        $range = ValueRange::ofFixed(0, 5);
+
+        $expected = 2;
+        $field = Mockery::mock(TemporalField::class);
+
+        $this->assertSame($expected, $range->checkValidValue($expected, $field));
+    }
+
+    public function testCheckValidValueThrowsInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected a value within range 0 - 5 for MockedTemporalField, got 6');
+
+        $range = ValueRange::ofFixed(0, 5);
+
+        $expected = 6;
+        $field = Mockery::mock(TemporalField::class);
+        $field->shouldReceive('toString')->andReturn('MockedTemporalField');
+
+        $range->checkValidValue($expected, $field);
     }
 }
