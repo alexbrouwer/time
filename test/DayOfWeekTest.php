@@ -6,6 +6,7 @@ use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Enum\PHPUnit\EnumTestCase;
 use PAR\Time\DayOfWeek;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Factory;
 
 class DayOfWeekTest extends EnumTestCase
 {
@@ -65,6 +66,8 @@ class DayOfWeekTest extends EnumTestCase
 
     public function testFromNative(): void
     {
-        $this->markTestIncomplete('Waiting for Factory::create availabily');
+        $dt = Factory::createDate(2018, 3, 4);
+
+        self::assertSameObject(DayOfWeek::SUNDAY(), DayOfWeek::fromNative($dt));
     }
 }
