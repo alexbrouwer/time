@@ -101,11 +101,6 @@ final class Month extends Enum
         return self::valueOf(self::VALUE_MAP[$month]);
     }
 
-    public function range()
-    {
-
-    }
-
     /**
      * Returns the month-of-year that is the specified number of quarters after this one.
      *
@@ -124,15 +119,15 @@ final class Month extends Enum
             $newValue = self::MAX_VALUE;
         }
 
-        $years = (int)floor($newValue / 12);
+        $rangeMultiplier = (int)floor($newValue / self::MAX_VALUE);
 
         if ($newValue < self::MIN_VALUE) {
-            $years *= -1;
-            $newValue = ($years * 12) + $newValue;
+            $rangeMultiplier *= -1;
+            $newValue = ($rangeMultiplier * self::MAX_VALUE) + $newValue;
         }
 
         if ($newValue > self::MAX_VALUE) {
-            $newValue -= $years * 12;
+            $newValue -= $rangeMultiplier * self::MAX_VALUE;
         }
 
         if ($newValue === $currentValue) {

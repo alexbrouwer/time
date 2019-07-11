@@ -103,15 +103,15 @@ final class DayOfWeek extends Enum
             $newValue = self::MAX_VALUE;
         }
 
-        $weeks = (int)floor($newValue / 7);
+        $rangeMultiplier = (int)floor($newValue / self::MAX_VALUE);
 
         if ($newValue < self::MIN_VALUE) {
-            $weeks *= -1;
-            $newValue = ($weeks * 7) + $newValue;
+            $rangeMultiplier *= -1;
+            $newValue = ($rangeMultiplier * self::MAX_VALUE) + $newValue;
         }
 
         if ($newValue > self::MAX_VALUE) {
-            $newValue -= $weeks * 7;
+            $newValue -= $rangeMultiplier * self::MAX_VALUE;
         }
 
         if ($newValue === $currentValue) {
