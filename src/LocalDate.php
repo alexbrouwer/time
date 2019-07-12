@@ -46,5 +46,4 @@ final class LocalDate implements Temporal
         // TODO: Implement get() method.
         throw UnsupportedTemporalTypeException::forField($field);
     }
-
 }

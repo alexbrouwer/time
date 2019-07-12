@@ -32,7 +32,7 @@ class TimeTestCase extends TestCase
     }
 
     /**
-     * Lock Factory::parse() within the Closure to make sure every call uses the exact datetime regardless of current time
+     * Lock Factory::create() within the Closure to make sure every call uses the exact datetime regardless of current time
      *
      * @param Closure                $func The function to execute with locked now
      * @param DateTimeInterface|null $dt   The now to use

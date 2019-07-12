@@ -83,5 +83,4 @@ final class ChronoUnit extends Enum implements TemporalUnit
     {
         return $this->isDateBased();
     }
-
 }

@@ -74,9 +74,9 @@ final class Month extends Enum implements TemporalAccessor
     private $value;
 
     /**
-     * Obtains an instance of DayOfWeek from a native DateTime or DateTimeImmutable object.
+     * Obtains an instance of DayOfWeek from an implementation of the DateTimeInterface.
      *
-     * @param DateTimeInterface $dateTime
+     * @param DateTimeInterface $dateTime The datetime to convert
      *
      * @return Month
      */
@@ -85,6 +85,21 @@ final class Month extends Enum implements TemporalAccessor
         $monthOfYear = ChronoField::MONTH_OF_YEAR()->getFromNative($dateTime);
 
         return self::of($monthOfYear);
+    }
+
+    /**
+     * Obtains an instance of Month from an int value.
+     *
+     * @param int $month The month-of-year to represent, from 1 (January) to 12 (December)
+     *
+     * @return Month
+     * @throws InvalidArgumentException If the month-of-year is invalid
+     */
+    public static function of(int $month): self
+    {
+        Assert::range($month, self::MIN_VALUE, self::MAX_VALUE);
+
+        return self::valueOf(self::VALUE_MAP[$month]);
     }
 
     /**
@@ -103,21 +118,6 @@ final class Month extends Enum implements TemporalAccessor
     public function getValue(): int
     {
         return $this->value;
-    }
-
-    /**
-     * Obtains an instance of Month from an int value.
-     *
-     * @param int $month The month-of-year to represent, from 1 (January) to 12 (December)
-     *
-     * @return Month
-     * @throws InvalidArgumentException If the month-of-year is invalid
-     */
-    public static function of(int $month): self
-    {
-        Assert::range($month, self::MIN_VALUE, self::MAX_VALUE);
-
-        return self::valueOf(self::VALUE_MAP[$month]);
     }
 
     /**

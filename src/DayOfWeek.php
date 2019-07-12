@@ -58,21 +58,17 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     private $value;
 
     /**
-     * @param int $value
-     */
-    protected function __construct(int $value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * Gets the day-of-week int value.
+     * Obtains an instance of DayOfWeek from  an implementation of the DateTimeInterface.
      *
-     * @return int
+     * @param DateTimeInterface $dateTime The datetime to convert
+     *
+     * @return DayOfWeek
      */
-    public function getValue(): int
+    public static function fromNative(DateTimeInterface $dateTime): self
     {
-        return $this->value;
+        $dayOfWeek = ChronoField::DAY_OF_WEEK()->getFromNative($dateTime);
+
+        return self::of($dayOfWeek);
     }
 
     /**
@@ -88,6 +84,24 @@ final class DayOfWeek extends Enum implements TemporalAccessor
         Assert::range($dayOfWeek, self::MIN_VALUE, self::MAX_VALUE);
 
         return self::valueOf(self::VALUE_MAP[$dayOfWeek]);
+    }
+
+    /**
+     * @param int $value
+     */
+    protected function __construct(int $value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * Gets the day-of-week int value.
+     *
+     * @return int
+     */
+    public function getValue(): int
+    {
+        return $this->value;
     }
 
     /**
@@ -138,20 +152,6 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     public function minus(int $days): self
     {
         return $this->plus($days * -1);
-    }
-
-    /**
-     * Obtains an instance of DayOfWeek from a native DateTime or DateTimeImmutable object.
-     *
-     * @param DateTimeInterface $dateTime
-     *
-     * @return DayOfWeek
-     */
-    public static function fromNative(DateTimeInterface $dateTime): self
-    {
-        $dayOfWeek = ChronoField::DAY_OF_WEEK()->getFromNative($dateTime);
-
-        return self::of($dayOfWeek);
     }
 
     /**

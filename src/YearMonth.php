@@ -46,5 +46,4 @@ final class YearMonth implements Temporal
         // TODO: Implement get() method.
         throw UnsupportedTemporalTypeException::forField($field);
     }
-
 }

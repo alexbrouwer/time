@@ -16,8 +16,8 @@ class ValueRangeTest extends TestCase
         $max = 10;
         $range = ValueRange::ofFixed($min, $max);
 
-        $this->assertSame($min, $range->getMinimum());
-        $this->assertSame($max, $range->getMaximum());
+        self::assertSame($min, $range->getMinimum());
+        self::assertSame($max, $range->getMaximum());
     }
 
     public function testCreateFixedWithMaxLessThanMinThrowsInvalidArgumentException(): void
@@ -34,9 +34,9 @@ class ValueRangeTest extends TestCase
         $largestMax = 31;
         $range = ValueRange::ofVariableMax($min, $smallestMax, $largestMax);
 
-        $this->assertSame($min, $range->getMinimum());
-        $this->assertSame($smallestMax, $range->getSmallestMaximum());
-        $this->assertSame($largestMax, $range->getMaximum());
+        self::assertSame($min, $range->getMinimum());
+        self::assertSame($smallestMax, $range->getSmallestMaximum());
+        self::assertSame($largestMax, $range->getMaximum());
     }
 
     public function testCreateVariableMaxWithMaxLessThanMinThrowsInvalidArgumentException(): void
@@ -54,10 +54,10 @@ class ValueRangeTest extends TestCase
         $largestMax = 31;
         $range = ValueRange::ofVariable($smallestMin, $largestMin, $smallestMax, $largestMax);
 
-        $this->assertSame($smallestMin, $range->getMinimum());
-        $this->assertSame($largestMin, $range->getLargestMinimum());
-        $this->assertSame($smallestMax, $range->getSmallestMaximum());
-        $this->assertSame($largestMax, $range->getMaximum());
+        self::assertSame($smallestMin, $range->getMinimum());
+        self::assertSame($largestMin, $range->getLargestMinimum());
+        self::assertSame($smallestMax, $range->getSmallestMaximum());
+        self::assertSame($largestMax, $range->getMaximum());
     }
 
     public function testCreateVariableWithSmallestMinGreaterThanLargestMinThrowsInvalidArgumentException(): void
@@ -79,7 +79,7 @@ class ValueRangeTest extends TestCase
     public function testTransformToString(int $smallestMin, int $largestMin, int $smallestMax, int $largestMax, string $expected): void
     {
         $range = ValueRange::ofVariable($smallestMin, $largestMin, $smallestMax, $largestMax);
-        $this->assertSame($expected, $range->toString());
+        self::assertSame($expected, $range->toString());
     }
 
     public function provideForTransformToString(): array
@@ -94,20 +94,20 @@ class ValueRangeTest extends TestCase
 
     public function testCanDetermineEquality(): void
     {
-        $this->assertTrue(ValueRange::ofVariable(0, 1, 2, 3)->equals(ValueRange::ofVariable(0, 1, 2, 3)));
-        $this->assertFalse(ValueRange::ofVariable(0, 1, 2, 3)->equals(ValueRange::ofFixed(0, 1)));
+        self::assertTrue(ValueRange::ofVariable(0, 1, 2, 3)->equals(ValueRange::ofVariable(0, 1, 2, 3)));
+        self::assertFalse(ValueRange::ofVariable(0, 1, 2, 3)->equals(ValueRange::ofFixed(0, 1)));
     }
 
     public function testCanDetermineValueIsValid(): void
     {
         $range = ValueRange::ofVariable(0, 1, 2, 3);
 
-        $this->assertFalse($range->isValidValue(-1));
-        $this->assertTrue($range->isValidValue(0));
-        $this->assertTrue($range->isValidValue(1));
-        $this->assertTrue($range->isValidValue(2));
-        $this->assertTrue($range->isValidValue(3));
-        $this->assertFalse($range->isValidValue(4));
+        self::assertFalse($range->isValidValue(-1));
+        self::assertTrue($range->isValidValue(0));
+        self::assertTrue($range->isValidValue(1));
+        self::assertTrue($range->isValidValue(2));
+        self::assertTrue($range->isValidValue(3));
+        self::assertFalse($range->isValidValue(4));
     }
 
     public function testCheckValidValue(): void
@@ -117,7 +117,7 @@ class ValueRangeTest extends TestCase
         $expected = 2;
         $field = Mockery::mock(TemporalField::class);
 
-        $this->assertSame($expected, $range->checkValidValue($expected, $field));
+        self::assertSame($expected, $range->checkValidValue($expected, $field));
     }
 
     public function testCheckValidValueThrowsInvalidArgumentException(): void

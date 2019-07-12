@@ -46,5 +46,4 @@ final class LocalTime implements Temporal
         // TODO: Implement get() method.
         throw UnsupportedTemporalTypeException::forField($field);
     }
-
 }
