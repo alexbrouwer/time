@@ -10,6 +10,7 @@ use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Factory;
 use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\ValueRange;
+use PAR\Time\Year;
 
 class ChronoFieldTest extends EnumTestCase
 {
@@ -22,6 +23,7 @@ class ChronoFieldTest extends EnumTestCase
                 ChronoField::DAY_OF_WEEK(),
                 ChronoField::DAY_OF_MONTH(),
                 ChronoField::MONTH_OF_YEAR(),
+                ChronoField::YEAR(),
             ],
             ChronoField::values()
         );
@@ -61,6 +63,18 @@ class ChronoFieldTest extends EnumTestCase
         self::assertSameObject(ChronoUnit::YEARS(), $field->getRangeUnit());
         self::assertSame((int)$native->format('n'), $field->getFromNative($native));
         self::assertSameObject(ValueRange::ofFixed(1, 12), $field->range());
+    }
+
+    public function testYear(): void
+    {
+        $field = ChronoField::YEAR();
+
+        $native = Factory::create(2018, 3, 4, 5, 6, 7);
+
+        self::assertSameObject(ChronoUnit::YEARS(), $field->getBaseUnit());
+        self::assertSameObject(ChronoUnit::FOREVER(), $field->getRangeUnit());
+        self::assertSame((int)$native->format('Y'), $field->getFromNative($native));
+        self::assertSameObject(ValueRange::ofFixed(Year::MIN_VALUE, Year::MAX_VALUE), $field->range());
     }
 
     public function testIsSupportedBy(): void

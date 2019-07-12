@@ -7,6 +7,7 @@ use PAR\Enum\Enum;
 use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\TemporalField;
 use PAR\Time\Temporal\ValueRange;
+use PAR\Time\Year;
 
 /**
  * A standard set of fields.
@@ -16,12 +17,14 @@ use PAR\Time\Temporal\ValueRange;
  * @method static self DAY_OF_WEEK()
  * @method static self DAY_OF_MONTH()
  * @method static self MONTH_OF_YEAR()
+ * @method static self YEAR()
  */
 final class ChronoField extends Enum implements TemporalField
 {
     protected const DAY_OF_WEEK = ['DAYS', 'WEEKS', [1, 7], 'N'];
     protected const DAY_OF_MONTH = ['DAYS', 'MONTHS', [1, 28, 31], 'j'];
     protected const MONTH_OF_YEAR = ['MONTHS', 'YEARS', [1, 12], 'n'];
+    protected const YEAR = ['YEARS', 'FOREVER', [Year::MIN_VALUE, Year::MAX_VALUE], 'Y'];
 
     /**
      * @var string
