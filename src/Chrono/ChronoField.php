@@ -97,14 +97,18 @@ final class ChronoField extends Enum implements TemporalField
             $this->rangeValues = [PHP_INT_MIN, PHP_INT_MAX];
         }
 
+        $method = 'ofFixed';
         if (count($this->rangeValues) >= 4) {
-            return forward_static_call_array([ValueRange::class, 'ofVariable'], $this->rangeValues);
+            $method = 'ofVariable';
         }
         if (count($this->rangeValues) >= 3) {
-            return forward_static_call_array([ValueRange::class, 'ofVariableMax'], $this->rangeValues);
+            $method = 'ofVariableMax';
         }
 
-        return forward_static_call_array([ValueRange::class, 'ofFixed'], $this->rangeValues);
+        /** @var callable $callable */
+        $callable = [ValueRange::class, $method];
+
+        return forward_static_call_array($callable, $this->rangeValues);
     }
 
     /**
