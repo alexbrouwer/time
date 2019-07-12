@@ -31,108 +31,6 @@ final class Factory
     private static $lastErrors = [];
 
     /**
-     * @return DateTimeImmutable|null
-     */
-    public static function getTestNow(): ?DateTimeImmutable
-    {
-        return self::$testNow;
-    }
-
-    /**
-     * @param DateTimeImmutable|null $dateTime
-     */
-    public static function setTestNow(DateTimeImmutable $dateTime = null): void
-    {
-        self::$testNow = $dateTime;
-    }
-
-    /**
-     * Create a DateTimeImmutable from a DateTimeInterface
-     *
-     * @param DateTimeInterface $dateTime The datetime instance to convert.
-     *
-     * @return DateTimeImmutable
-     */
-    public static function createFromInstance(DateTimeInterface $dateTime): DateTimeImmutable
-    {
-        if ($dateTime instanceof DateTimeImmutable) {
-            return $dateTime;
-        }
-
-        return self::createFromFormat(DATE_ATOM, $dateTime->format(DATE_ATOM), $dateTime->getTimezone());
-    }
-
-    /**
-     * Create a DateTimeImmutable instance from a timestamp
-     *
-     * @param int                      $timestamp The timestamp to create an instance from.
-     * @param DateTimeZone|string|null $tz        The timezone for the instance. Defaults to default timezone.
-     *
-     * @return DateTimeImmutable
-     */
-    public static function createFromTimestamp($timestamp, $tz = null): DateTimeImmutable
-    {
-        return static::now($tz)->setTimestamp($timestamp);
-    }
-
-    /**
-     * Create a DateTimeImmutable instance from a specific format.
-     *
-     * @param string                   $format The date() compatible format string.
-     * @param string                   $time   The formatted date string to interpret.
-     * @param DateTimeZone|string|null $tz     The timezone for the instance. Defaults to default timezone.
-     *
-     * @return DateTimeImmutable
-     * @throws InvalidArgumentException
-     */
-    public static function createFromFormat($format, $time, $tz = null): DateTimeImmutable
-    {
-        if ($tz !== null) {
-            $dt = DateTimeImmutable::createFromFormat($format, $time, static::safeCreateDateTimeZone($tz));
-        } else {
-            $dt = DateTimeImmutable::createFromFormat($format, $time);
-        }
-
-        $errors = DateTimeImmutable::getLastErrors();
-        if ($dt == false) {
-            throw new InvalidArgumentException(implode(PHP_EOL, $errors['errors']));
-        }
-        static::$lastErrors = $errors;
-
-        return $dt;
-    }
-
-    /**
-     * Create a DateTimeImmutable instance from just a date. The time portion is set to now.
-     *
-     * @param int|null                 $year  The year to create an instance with.
-     * @param int|null                 $month The month to create an instance with.
-     * @param int|null                 $day   The day to create an instance with.
-     * @param DateTimeZone|string|null $tz    The timezone for the instance. Defaults to default timezone.
-     *
-     * @return DateTimeImmutable
-     */
-    public static function createDate($year = null, $month = null, $day = null, $tz = null): DateTimeImmutable
-    {
-        return static::create($year, $month, $day, null, null, null, $tz);
-    }
-
-    /**
-     * Create a DateTimeImmutable instance from just a time. The date portion is set to today.
-     *
-     * @param int|null                 $hour   The hour to create an instance with.
-     * @param int|null                 $minute The minute to create an instance with.
-     * @param int|null                 $second The second to create an instance with.
-     * @param DateTimeZone|string|null $tz     The timezone for the instance. Defaults to default timezone.
-     *
-     * @return DateTimeImmutable
-     */
-    public static function createTime($hour = null, $minute = null, $second = null, $tz = null): DateTimeImmutable
-    {
-        return static::create(null, null, null, $hour, $minute, $second, $tz);
-    }
-
-    /**
      * Create a DateTimeImmutable from a specific date and time.
      *
      * If any of $year, $month or $day are set to null their now() values will be used.
@@ -168,6 +66,135 @@ final class Factory
         $instance = static::createFromFormat('Y-n-j G:i:s', sprintf('%s-%s-%s %s:%02s:%02s', 0, $month, $day, $hour, $minute, $second), $tz);
 
         return $instance->modify((int)$year . ' year');
+    }
+
+    /**
+     * Create a DateTimeImmutable instance from just a date. The time portion is set to now.
+     *
+     * @param int|null                 $year  The year to create an instance with.
+     * @param int|null                 $month The month to create an instance with.
+     * @param int|null                 $day   The day to create an instance with.
+     * @param DateTimeZone|string|null $tz    The timezone for the instance. Defaults to default timezone.
+     *
+     * @return DateTimeImmutable
+     */
+    public static function createDate($year = null, $month = null, $day = null, $tz = null): DateTimeImmutable
+    {
+        return static::create($year, $month, $day, null, null, null, $tz);
+    }
+
+    /**
+     * Create a DateTimeImmutable instance from a specific format.
+     *
+     * @param string                   $format The date() compatible format string.
+     * @param string                   $time   The formatted date string to interpret.
+     * @param DateTimeZone|string|null $tz     The timezone for the instance. Defaults to default timezone.
+     *
+     * @return DateTimeImmutable
+     * @throws InvalidArgumentException
+     */
+    public static function createFromFormat($format, $time, $tz = null): DateTimeImmutable
+    {
+        if ($tz !== null) {
+            $dt = DateTimeImmutable::createFromFormat($format, $time, static::safeCreateDateTimeZone($tz));
+        } else {
+            $dt = DateTimeImmutable::createFromFormat($format, $time);
+        }
+
+        $errors = DateTimeImmutable::getLastErrors();
+        if ($dt == false) {
+            throw new InvalidArgumentException(implode(PHP_EOL, $errors['errors']));
+        }
+        static::$lastErrors = $errors;
+
+        return $dt;
+    }
+
+    /**
+     * Create a DateTimeImmutable from a DateTimeInterface
+     *
+     * @param DateTimeInterface $dateTime The datetime instance to convert.
+     *
+     * @return DateTimeImmutable
+     */
+    public static function createFromInstance(DateTimeInterface $dateTime): DateTimeImmutable
+    {
+        if ($dateTime instanceof DateTimeImmutable) {
+            return $dateTime;
+        }
+
+        return self::createFromFormat(DATE_ATOM, $dateTime->format(DATE_ATOM), $dateTime->getTimezone());
+    }
+
+    /**
+     * Create a DateTimeImmutable instance from a timestamp
+     *
+     * @param int                      $timestamp The timestamp to create an instance from.
+     * @param DateTimeZone|string|null $tz        The timezone for the instance. Defaults to default timezone.
+     *
+     * @return DateTimeImmutable
+     */
+    public static function createFromTimestamp($timestamp, $tz = null): DateTimeImmutable
+    {
+        return static::now($tz)->setTimestamp($timestamp);
+    }
+
+    /**
+     * Create a DateTimeImmutable instance from just a time. The date portion is set to today.
+     *
+     * @param int|null                 $hour   The hour to create an instance with.
+     * @param int|null                 $minute The minute to create an instance with.
+     * @param int|null                 $second The second to create an instance with.
+     * @param DateTimeZone|string|null $tz     The timezone for the instance. Defaults to default timezone.
+     *
+     * @return DateTimeImmutable
+     */
+    public static function createTime($hour = null, $minute = null, $second = null, $tz = null): DateTimeImmutable
+    {
+        return static::create(null, null, null, $hour, $minute, $second, $tz);
+    }
+
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public static function getTestNow(): ?DateTimeImmutable
+    {
+        return self::$testNow;
+    }
+
+    /**
+     * @param DateTimeImmutable|null $dateTime
+     */
+    public static function setTestNow(DateTimeImmutable $dateTime = null): void
+    {
+        self::$testNow = $dateTime;
+    }
+
+    /**
+     * Determines if provided time is according to format.
+     *
+     * @param string $format        The date() compatible format string.
+     * @param string $time          The formatted date string to interpret.
+     * @param bool   $allowWrapping Allow wrapping (April 31st to May 1st, )
+     *
+     * @return bool
+     */
+    public static function isValidForFormat($format, $time, $allowWrapping = false): bool
+    {
+        DateTimeImmutable::createFromFormat($format, $time);
+        $lastDateTimeErrors = DateTimeImmutable::getLastErrors();
+
+        return $lastDateTimeErrors['error_count'] === 0 && ($allowWrapping === true || $lastDateTimeErrors['warning_count'] === 0);
+    }
+
+    /**
+     * @param DateTimeZone|string|null $tz The timezone for the instance. Defaults to default timezone.
+     *
+     * @return DateTimeImmutable
+     */
+    public static function now($tz = null): DateTimeImmutable
+    {
+        return static::parse(self::NOW, $tz);
     }
 
     /**
@@ -217,16 +244,6 @@ final class Factory
      *
      * @return DateTimeImmutable
      */
-    public static function now($tz = null): DateTimeImmutable
-    {
-        return static::parse(self::NOW, $tz);
-    }
-
-    /**
-     * @param DateTimeZone|string|null $tz The timezone for the instance. Defaults to default timezone.
-     *
-     * @return DateTimeImmutable
-     */
     public static function today($tz = null): DateTimeImmutable
     {
         return static::parse(self::TODAY, $tz);
@@ -250,23 +267,6 @@ final class Factory
     public static function yesterday($tz = null): DateTimeImmutable
     {
         return static::parse(self::YESTERDAY, $tz);
-    }
-
-    /**
-     * Determines if provided time is according to format.
-     *
-     * @param string $format        The date() compatible format string.
-     * @param string $time          The formatted date string to interpret.
-     * @param bool   $allowWrapping Allow wrapping (April 31st to May 1st, )
-     *
-     * @return bool
-     */
-    public static function isValidForFormat($format, $time, $allowWrapping = false): bool
-    {
-        DateTimeImmutable::createFromFormat($format, $time);
-        $lastDateTimeErrors = DateTimeImmutable::getLastErrors();
-
-        return $lastDateTimeErrors['error_count'] === 0 && ($allowWrapping === true || $lastDateTimeErrors['warning_count'] === 0);
     }
 
     /**
