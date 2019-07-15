@@ -2,7 +2,10 @@
 
 namespace PAR\Time\Temporal;
 
-interface TemporalUnit
+use PAR\Core\ComparableInterface;
+use PAR\Time\Duration;
+
+interface TemporalUnit extends ComparableInterface
 {
     /**
      * Checks if this unit is a date unit.
@@ -34,4 +37,11 @@ interface TemporalUnit
      * @return bool
      */
     public function isDurationEstimated(): bool;
+
+    /**
+     * Gets the amount of this unit, which may be an estimate.
+     *
+     * @return Duration
+     */
+    public function getDuration(): Duration;
 }

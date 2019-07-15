@@ -3,16 +3,22 @@
 namespace PAR\Time;
 
 use DateTimeInterface;
+use PAR\Core\ComparableInterface;
+use PAR\Core\Exception\ClassMismatchException;
+use PAR\Core\Helper\InstanceHelper;
 use PAR\Time\Chrono\ChronoField;
+use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\InvalidArgumentException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\Temporal;
+use PAR\Time\Temporal\TemporalAmount;
 use PAR\Time\Temporal\TemporalField;
+use PAR\Time\Temporal\TemporalUnit;
 
 /**
  * A year in the ISO-8601 calendar system, such as 2007.
  */
-final class Year implements Temporal
+final class Year implements Temporal, ComparableInterface
 {
     public const MIN_VALUE = -999999999;
     public const MAX_VALUE = 999999999;
@@ -43,9 +49,12 @@ final class Year implements Temporal
      *
      * @return bool
      */
-    public static function isLeap(int $year): bool
+    public static function isLeapYear(int $year): bool
     {
-        $dt = Factory::createFromFormat('Y', (string)$year);
+        if ($year === 0) {
+            return false;
+        }
+        $dt = Factory::createDate($year);
 
         return (int)$dt->format('L') === 1;
     }
@@ -90,6 +99,9 @@ final class Year implements Temporal
         return new self((int)$text);
     }
 
+    /**
+     * @param int $value
+     */
     private function __construct(int $value)
     {
         Assert::range($value, self::MIN_VALUE, self::MAX_VALUE);
@@ -105,6 +117,18 @@ final class Year implements Temporal
     public function getValue(): int
     {
         return $this->value;
+    }
+
+    /**
+     * Checks if the year is a leap year, according to the ISO calendar system rules.
+     *
+     * @see Year::isLeapYear
+     *
+     * @return bool
+     */
+    public function isLeap(): bool
+    {
+        return static::isLeapYear($this->value);
     }
 
     /**
@@ -128,12 +152,18 @@ final class Year implements Temporal
     }
 
     /**
-     * @inheritDoc
+     * Checks if the specified field is supported.
+     *
+     * Supported:
+     * - ChronoField::YEAR()
+     *
+     * @param TemporalField $field The field to check
+     *
+     * @return bool
      */
     public function supportsField(TemporalField $field): bool
     {
-        // TODO: Implement supportsField() method.
-        return false;
+        return ChronoField::YEAR()->equals($field);
     }
 
     /**
@@ -141,7 +171,171 @@ final class Year implements Temporal
      */
     public function get(TemporalField $field): int
     {
-        // TODO: Implement get() method.
+        if ($this->supportsField($field)) {
+            return $this->getValue();
+        }
+
         throw UnsupportedTemporalTypeException::forField($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function compareTo(ComparableInterface $other): int
+    {
+        if ($other instanceof self && get_class($other) === static::class) {
+            return $this->value - $other->value;
+        }
+
+        throw ClassMismatchException::expectedInstance($this, $other);
+    }
+
+    /**
+     * Checks if this year is before the specified year.
+     *
+     * @param Year $year The other year to compare to
+     *
+     * @return bool
+     */
+    public function isBefore(Year $year): bool
+    {
+        return $this->compareTo($year) < 0;
+    }
+
+    /**
+     * Checks if this year is after the specified year.
+     *
+     * @param Year $year The other year to compare to
+     *
+     * @return bool
+     */
+    public function isAfter(Year $year): bool
+    {
+        return $this->compareTo($year) > 0;
+    }
+
+    /**
+     * Combines this year with a day-of-year to create a LocalDate.
+     *
+     * @param int $dayOfYear The day-of-year to use, from 1 to 365-366
+     *
+     * @return LocalDate
+     */
+    public function atDay(int $dayOfYear): LocalDate
+    {
+        return LocalDate::ofYearDay($this, $dayOfYear);
+    }
+
+    /**
+     * Combines this year with a month to create a YearMonth.
+     *
+     * @param Month $month The month-of-year to use
+     *
+     * @return YearMonth
+     */
+    public function atMonth(Month $month): YearMonth
+    {
+        return YearMonth::of($this, $month);
+    }
+
+    /**
+     * Gets the length of this year in days.
+     *
+     * @return int 365 or 366
+     */
+    public function length(): int
+    {
+        return $this->isLeap() ? 366 : 365;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return Year
+     */
+    public function plus(int $amountToAdd, TemporalUnit $unit): self
+    {
+        if (!$this->supportsUnit($unit)) {
+            throw UnsupportedTemporalTypeException::forUnit($unit);
+        }
+
+        return $this->plusAmount($unit->getDuration()->multipliedBy($amountToAdd));
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return Year
+     */
+    public function plusAmount(TemporalAmount $amount): self
+    {
+        $temporal = $amount->addTo($this);
+
+        /** @var self $temporal */
+        return $temporal;
+    }
+
+    /**
+     * Returns a copy of this Year with the specified number of years added.
+     *
+     * @param int $years The years to add, may be negative
+     *
+     * @return Year
+     */
+    public function plusYears(int $years): self
+    {
+        return self::of($this->value + $years);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return Year
+     */
+    public function minus(int $amountToSubtract, TemporalUnit $unit): self
+    {
+        return $this->plus($amountToSubtract * -1, $unit);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return Year
+     */
+    public function minusAmount(TemporalAmount $amount): self
+    {
+        $temporal = $amount->subtractFrom($this);
+
+        /** @var self $temporal */
+        return $temporal;
+    }
+
+    /**
+     * Returns a copy of this Year with the specified number of years subtracted.
+     *
+     * @param int $years The years to subtract, may be negative
+     *
+     * @return Year
+     */
+    public function minusYears(int $years): self
+    {
+        return $this->plusYears($years * -1);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsUnit(TemporalUnit $unit): bool
+    {
+        return $unit->isDateBased()
+            && InstanceHelper::isAnyOf(
+                $unit,
+                [
+                    ChronoUnit::YEARS(),
+                    ChronoUnit::DECADES(),
+                    ChronoUnit::CENTURIES(),
+                    ChronoUnit::MILLENIA(),
+                ]
+            );
     }
 }

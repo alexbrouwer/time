@@ -3,6 +3,7 @@
 namespace PARTest\Time;
 
 use PAR\Core\PHPUnit\CoreAssertions;
+use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Exception\InvalidArgumentException;
 use PAR\Time\Factory;
 use PAR\Time\Year;
@@ -43,11 +44,20 @@ class YearTest extends TimeTestCase
 
     public function testIsLeap(): void
     {
-        self::assertTrue(Year::isLeap(1904)); // divisible by 4
-        self::assertTrue(Year::isLeap(2000)); // divisible by 400
+        self::assertTrue(Year::isLeapYear(1904)); // divisible by 4
+        self::assertTrue(Year::isLeapYear(2000)); // divisible by 400
 
-        self::assertFalse(Year::isLeap(1900)); // divisible by 100
-        self::assertFalse(Year::isLeap(1901)); // not divisible by 4
+        self::assertFalse(Year::isLeapYear(1900)); // divisible by 100
+        self::assertFalse(Year::isLeapYear(1901)); // not divisible by 4
+    }
+
+    public function testIsLeapYear(): void
+    {
+        self::assertTrue(Year::of(1904)->isLeap()); // divisible by 4
+        self::assertTrue(Year::of(2000)->isLeap()); // divisible by 400
+
+        self::assertFalse(Year::of(1900)->isLeap()); // divisible by 100
+        self::assertFalse(Year::of(1901)->isLeap()); // not divisible by 4
     }
 
     public function testFromNative(): void
@@ -73,6 +83,36 @@ class YearTest extends TimeTestCase
         );
     }
 
+    public function provideSupportedFields(): array
+    {
+        $supported = [
+            ChronoField::YEAR(),
+        ];
+
+        return SupportedProvider::fields($supported);
+    }
+
+    /**
+     * @dataProvider provideSupportedFields
+     *
+     * @param ChronoField $field
+     * @param bool        $expected
+     */
+    public function testSupportsFields(ChronoField $field, bool $expected): void
+    {
+        $year = Year::of(2000);
+
+        $this->assertSame($expected, $year->supportsField($field));
+    }
+
+    public function testGet()
+    {
+        $expected = 2015;
+        $year = Year::of($expected);
+
+        $this->assertSame($expected, $year->get(ChronoField::YEAR()));
+    }
+
     /**
      * @dataProvider provideForParse
      *
@@ -93,12 +133,40 @@ class YearTest extends TimeTestCase
 
     public function provideForParse(): array
     {
-        return [
+        $data = [
             ['2000', Year::of(2000)],
             ['-2000', Year::of(-2000)],
             ['+2000', Year::of(2000)],
             ['0000', Year::of(0)],
-            ['0000', Year::of(0)],
         ];
+
+        return $data;
+    }
+
+    public function testCompareTo(): void
+    {
+        $this->assertSame(0, Year::of(2000)->compareTo(Year::of(2000)));
+        $this->assertSame(10, Year::of(2000)->compareTo(Year::of(1990)));
+        $this->assertSame(-8, Year::of(2000)->compareTo(Year::of(2008)));
+    }
+
+    public function testIsBefore(): void
+    {
+        $this->assertTrue(Year::of(2000)->isBefore(Year::of(2009)));
+        $this->assertFalse(Year::of(2000)->isBefore(Year::of(2000)));
+        $this->assertFalse(Year::of(2000)->isBefore(Year::of(1995)));
+    }
+
+    public function testIsAfter(): void
+    {
+        $this->assertTrue(Year::of(2000)->isAfter(Year::of(1995)));
+        $this->assertFalse(Year::of(2000)->isAfter(Year::of(2000)));
+        $this->assertFalse(Year::of(2000)->isAfter(Year::of(2010)));
+    }
+
+    public function testLength(): void
+    {
+        $this->assertSame(365, Year::of(1995)->length());
+        $this->assertSame(366, Year::of(2000)->length());
     }
 }
