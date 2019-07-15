@@ -334,7 +334,7 @@ final class Year implements Temporal, ComparableInterface
                     ChronoUnit::YEARS(),
                     ChronoUnit::DECADES(),
                     ChronoUnit::CENTURIES(),
-                    ChronoUnit::MILLENIA(),
+                    ChronoUnit::MILLENNIA(),
                 ]
             );
     }

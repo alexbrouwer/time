@@ -4,6 +4,7 @@ namespace PARTest\Time\Chrono;
 
 use PAR\Enum\PHPUnit\EnumTestCase;
 use PAR\Time\Chrono\ChronoUnit;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 
 class ChronoUnitTest extends EnumTestCase
 {
@@ -23,7 +24,7 @@ class ChronoUnitTest extends EnumTestCase
                 ChronoUnit::YEARS(),
                 ChronoUnit::DECADES(),
                 ChronoUnit::CENTURIES(),
-                ChronoUnit::MILLENIA(),
+                ChronoUnit::MILLENNIA(),
                 ChronoUnit::FOREVER(),
             ],
             ChronoUnit::values()
@@ -44,7 +45,7 @@ class ChronoUnitTest extends EnumTestCase
         self::assertTrue(ChronoUnit::YEARS()->isDateBased());
         self::assertTrue(ChronoUnit::DECADES()->isDateBased());
         self::assertTrue(ChronoUnit::CENTURIES()->isDateBased());
-        self::assertTrue(ChronoUnit::MILLENIA()->isDateBased());
+        self::assertTrue(ChronoUnit::MILLENNIA()->isDateBased());
         self::assertFalse(ChronoUnit::FOREVER()->isDateBased());
     }
 
@@ -62,7 +63,7 @@ class ChronoUnitTest extends EnumTestCase
         self::assertFalse(ChronoUnit::YEARS()->isTimeBased());
         self::assertFalse(ChronoUnit::DECADES()->isTimeBased());
         self::assertFalse(ChronoUnit::CENTURIES()->isTimeBased());
-        self::assertFalse(ChronoUnit::MILLENIA()->isTimeBased());
+        self::assertFalse(ChronoUnit::MILLENNIA()->isTimeBased());
         self::assertFalse(ChronoUnit::FOREVER()->isTimeBased());
     }
 
@@ -80,7 +81,31 @@ class ChronoUnitTest extends EnumTestCase
         self::assertTrue(ChronoUnit::YEARS()->isDurationEstimated());
         self::assertTrue(ChronoUnit::DECADES()->isDurationEstimated());
         self::assertTrue(ChronoUnit::CENTURIES()->isDurationEstimated());
-        self::assertTrue(ChronoUnit::MILLENIA()->isDurationEstimated());
+        self::assertTrue(ChronoUnit::MILLENNIA()->isDurationEstimated());
         self::assertFalse(ChronoUnit::FOREVER()->isDurationEstimated());
+    }
+
+    public function testGetDuration(): void
+    {
+        $this->assertSame(365000, ChronoUnit::MILLENNIA()->getDuration()->toDays());
+        $this->assertSame(36500, ChronoUnit::CENTURIES()->getDuration()->toDays());
+        $this->assertSame(36500, ChronoUnit::CENTURIES()->getDuration()->toDays());
+        $this->assertSame(365, ChronoUnit::YEARS()->getDuration()->toDays());
+        $this->assertSame(30, ChronoUnit::MONTHS()->getDuration()->toDays());
+        $this->assertSame(7, ChronoUnit::WEEKS()->getDuration()->toDays());
+        $this->assertSame(1, ChronoUnit::DAYS()->getDuration()->toDays());
+
+        $this->assertSame(12, ChronoUnit::HALF_DAYS()->getDuration()->toHours());
+        $this->assertSame(1, ChronoUnit::HOURS()->getDuration()->toHours());
+        $this->assertSame(1, ChronoUnit::MINUTES()->getDuration()->toMinutes());
+        $this->assertSame(1, ChronoUnit::SECONDS()->getDuration()->toSeconds());
+        $this->assertSame(1, ChronoUnit::MILLIS()->getDuration()->toMillis());
+        $this->assertSame(1, ChronoUnit::MICROS()->getDuration()->toMicros());
+    }
+
+    public function testGetDurationOfForeverThrowsException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+        ChronoUnit::FOREVER()->getDuration();
     }
 }

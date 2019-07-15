@@ -22,7 +22,7 @@ use PAR\Time\Temporal\TemporalUnit;
  * @method static self YEARS()
  * @method static self DECADES()
  * @method static self CENTURIES()
- * @method static self MILLENIA()
+ * @method static self MILLENNIA()
  * @method static self FOREVER()
  */
 final class ChronoUnit extends Enum implements TemporalUnit
@@ -39,7 +39,7 @@ final class ChronoUnit extends Enum implements TemporalUnit
     protected const YEARS = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS];
     protected const DECADES = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::DECADE_IN_YEARS];
     protected const CENTURIES = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::CENTURY_IN_YEARS];
-    protected const MILLENIA = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::MILLENIUM_IN_YEARS];
+    protected const MILLENNIA = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::MILLENIUM_IN_YEARS];
     protected const FOREVER = [false, false, PHP_INT_MAX];
 
     public const MILLI_IN_MICROS = 1000;
