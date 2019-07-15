@@ -88,5 +88,4 @@ final class LocalTime implements Temporal
     {
         // TODO: Implement supportsUnit() method.
     }
-
 }

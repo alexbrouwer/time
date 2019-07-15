@@ -68,27 +68,13 @@ final class ChronoUnit extends Enum implements TemporalUnit
     private $timeBased;
 
     /**
-     * @var int
-     */
-    private $durationInSeconds;
-
-    /**
-     * @var int
-     */
-    private $durationInMicros;
-
-    /**
      * @param bool $dateBased
      * @param bool $timeBased
-     * @param int  $durationSeconds
-     * @param int  $durationMicros
      */
-    protected function __construct(bool $dateBased, bool $timeBased, int $durationSeconds, int $durationMicros = 0)
+    protected function __construct(bool $dateBased, bool $timeBased)
     {
         $this->dateBased = $dateBased;
         $this->timeBased = $timeBased;
-        $this->durationInSeconds = $durationSeconds;
-        $this->durationInMicros = $durationMicros;
     }
 
     /**
@@ -120,7 +106,5 @@ final class ChronoUnit extends Enum implements TemporalUnit
      */
     public function getDuration(): Duration
     {
-        return Duration::of($this->durationInSeconds, $this->durationInMicros);
     }
-
 }

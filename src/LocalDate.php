@@ -114,5 +114,4 @@ final class LocalDate implements Temporal
     {
         // TODO: Implement supportsUnit() method.
     }
-
 }

@@ -2,10 +2,10 @@
 
 namespace PAR\Time\Temporal;
 
-use PAR\Core\ComparableInterface;
+use PAR\Core\ObjectInterface;
 use PAR\Time\Duration;
 
-interface TemporalUnit extends ComparableInterface
+interface TemporalUnit extends ObjectInterface
 {
     /**
      * Checks if this unit is a date unit.

@@ -116,5 +116,4 @@ final class Period implements TemporalAmount
     {
         // TODO: Implement get() method.
     }
-
 }
