@@ -4,6 +4,7 @@ namespace PAR\Time\Chrono;
 
 use PAR\Enum\Enum;
 use PAR\Time\Duration;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\TemporalUnit;
 
 /**
@@ -106,5 +107,54 @@ final class ChronoUnit extends Enum implements TemporalUnit
      */
     public function getDuration(): Duration
     {
+        if ($this->isDateBased()) {
+            $yearInDays = 365;
+
+            switch ($this->name()) {
+                case 'DECADES':
+                    $days = $yearInDays * 10;
+                    break;
+                case 'CENTURIES':
+                    $days = $yearInDays * 100;
+                    break;
+                case 'MILLENNIA':
+                    $days = $yearInDays * 1000;
+                    break;
+                case 'MONTHS':
+                    $days = (int)floor($yearInDays / 12);
+                    break;
+                case 'WEEKS':
+                    $days = 7;
+                    break;
+                case 'YEARS':
+                    $days = $yearInDays;
+                    break;
+                case 'DAYS':
+                default:
+                    $days = 1;
+                    break;
+            }
+
+            return Duration::ofDays($days);
+        }
+
+        switch ($this->name()) {
+            case 'HALF_DAYS':
+                return Duration::ofHours(12);
+            case 'HOURS':
+                return Duration::ofHours(1);
+            case 'MICROS':
+                return Duration::ofMicros(1);
+            case 'MILLIS':
+                return Duration::ofMillis(1);
+            case 'MINUTES':
+                return Duration::ofMinutes(1);
+            case 'SECONDS':
+                return Duration::ofSeconds(1);
+            default:
+                break;
+        }
+
+        throw UnsupportedTemporalTypeException::forUnit($this);
     }
 }
