@@ -235,7 +235,12 @@ final class Duration implements TemporalAmount, ObjectInterface, ComparableInter
      */
     public static function parse(string $text): self
     {
-        if (!preg_match('/^(?<signed>-|\+)?P(?!$)(?<days>[-\+]?\d+D)?(T(?=[-\+\d])(?<hours>[-\+]?\d+H)?(?<minutes>[-\+]?\d+M)?(?<seconds>[-\+]?\d+(?:\.\d+)?S)?)?$/', $text, $matches)) {
+        if (!preg_match(
+            '/^(?<signed>-|\+)?P(?!$)(?<days>[-\+]?\d+D)?(T(?=[-\+\d])(?<hours>[-\+]?\d+H)?(?<minutes>[-\+]?\d+M)?(?<seconds>[-\+]?\d+(?:\.\d+)?S)?)?$/',
+            $text,
+            $matches
+        )
+        ) {
             throw new DateTimeException(sprintf('Invalid ISO-8601 duration string, got "%s"', $text));
         }
 
