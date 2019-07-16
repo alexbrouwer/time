@@ -2,10 +2,9 @@
 
 namespace PAR\Time\Temporal;
 
-use PAR\Core\ObjectInterface;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 
-interface TemporalAmount extends ObjectInterface
+interface TemporalAmount
 {
     /**
      * Adds to the specified temporal object.
@@ -14,14 +13,14 @@ interface TemporalAmount extends ObjectInterface
      *
      * @return Temporal An object of the same observable type with the addition made
      */
-    public function addTo(Temporal $temporal);
+    public function addTo(Temporal $temporal): Temporal;
 
     /**
      * @param Temporal $temporal
      *
      * @return Temporal An object of the same observable type with the addition made
      */
-    public function subtractFrom(Temporal $temporal);
+    public function subtractFrom(Temporal $temporal): Temporal;
 
     /**
      * Returns the list of units uniquely defining the value of this TemporalAmount. The list of TemporalUnits is

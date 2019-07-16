@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingParentConstructorInspection */
 
 namespace PAR\Time\Chrono;
 
@@ -6,6 +6,7 @@ use DateTimeInterface;
 use PAR\Enum\Enum;
 use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\TemporalField;
+use PAR\Time\Temporal\TemporalUnit;
 use PAR\Time\Temporal\ValueRange;
 use PAR\Time\Year;
 
@@ -47,37 +48,13 @@ final class ChronoField extends Enum implements TemporalField
     private $rangeValues;
 
     /**
-     * @param string     $baseUnit
-     * @param string     $rangeUnit
-     * @param array<int> $rangeValues
-     * @param string     $format
-     */
-    protected function __construct(string $baseUnit, string $rangeUnit, array $rangeValues, string $format)
-    {
-        $this->baseUnit = $baseUnit;
-        $this->rangeUnit = $rangeUnit;
-        $this->rangeValues = $rangeValues;
-        $this->format = $format;
-    }
-
-    /**
      * @inheritDoc
      *
      * @return ChronoUnit
      */
-    public function getBaseUnit(): ChronoUnit
+    public function getBaseUnit(): TemporalUnit
     {
         return ChronoUnit::valueOf($this->baseUnit);
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @return ChronoUnit
-     */
-    public function getRangeUnit(): ChronoUnit
-    {
-        return ChronoUnit::valueOf($this->rangeUnit);
     }
 
     /**
@@ -86,6 +63,42 @@ final class ChronoField extends Enum implements TemporalField
     public function getFromNative(DateTimeInterface $dateTime): int
     {
         return (int)$dateTime->format($this->format);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return ChronoUnit
+     */
+    public function getRangeUnit(): TemporalUnit
+    {
+        return ChronoUnit::valueOf($this->rangeUnit);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDateBased(): bool
+    {
+        return $this->getBaseUnit()->isDateBased()
+            && ($this->getRangeUnit()->isDateBased() || $this->getRangeUnit()->equals(ChronoUnit::FOREVER()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSupportedBy(TemporalAccessor $temporalAccessor): bool
+    {
+        return $temporalAccessor->supportsField($this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isTimeBased(): bool
+    {
+        return $this->getBaseUnit()->isTimeBased()
+            && ($this->getRangeUnit()->isTimeBased() || $this->getRangeUnit()->equals(ChronoUnit::FOREVER()));
     }
 
     /**
@@ -112,10 +125,16 @@ final class ChronoField extends Enum implements TemporalField
     }
 
     /**
-     * @inheritDoc
+     * @param string     $baseUnit
+     * @param string     $rangeUnit
+     * @param array<int> $rangeValues
+     * @param string     $format
      */
-    public function isSupportedBy(TemporalAccessor $temporalAccessor): bool
+    protected function __construct(string $baseUnit, string $rangeUnit, array $rangeValues, string $format)
     {
-        return $temporalAccessor->supportsField($this);
+        $this->baseUnit = $baseUnit;
+        $this->rangeUnit = $rangeUnit;
+        $this->rangeValues = $rangeValues;
+        $this->format = $format;
     }
 }

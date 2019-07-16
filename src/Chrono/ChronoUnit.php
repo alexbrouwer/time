@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingParentConstructorInspection */
 
 namespace PAR\Time\Chrono;
 
@@ -42,21 +42,20 @@ final class ChronoUnit extends Enum implements TemporalUnit
     protected const MILLENNIA = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::MILLENIUM_IN_YEARS];
     protected const FOREVER = [false, false, PHP_INT_MAX];
 
-    public const MILLI_IN_MICROS = 1000;
-    public const MINUTE_IN_SECONDS = 60;
-    public const HOUR_IN_MINUTES = 60;
-    public const HALF_DAY_IN_HOURS = 12;
-    public const DAY_IN_HOURS = 24;
-    public const WEEK_IN_DAYS = 7;
-    public const YEAR_IN_DAYS = 365;
-    public const YEAR_IN_MONTHS = 12;
-    public const DECADE_IN_YEARS = 10;
-    public const CENTURY_IN_YEARS = 100;
-    public const MILLENIUM_IN_YEARS = 1000;
+    private const MILLI_IN_MICROS = 1000;
+    private const MINUTE_IN_SECONDS = 60;
+    private const HOUR_IN_MINUTES = 60;
+    private const DAY_IN_HOURS = 24;
+    private const WEEK_IN_DAYS = 7;
+    private const YEAR_IN_DAYS = 365;
+    private const YEAR_IN_MONTHS = 12;
+    private const DECADE_IN_YEARS = 10;
+    private const CENTURY_IN_YEARS = 100;
+    private const MILLENIUM_IN_YEARS = 1000;
 
-    public const HOUR_IN_SECONDS = self::MINUTE_IN_SECONDS * self::HOUR_IN_MINUTES;
-    public const DAY_IN_MINUTES = self::DAY_IN_HOURS * self::HOUR_IN_MINUTES;
-    public const DAY_IN_SECONDS = self::DAY_IN_MINUTES * self::MINUTE_IN_SECONDS;
+    private const HOUR_IN_SECONDS = self::MINUTE_IN_SECONDS * self::HOUR_IN_MINUTES;
+    private const DAY_IN_MINUTES = self::DAY_IN_HOURS * self::HOUR_IN_MINUTES;
+    private const DAY_IN_SECONDS = self::DAY_IN_MINUTES * self::MINUTE_IN_SECONDS;
 
     /**
      * @var bool

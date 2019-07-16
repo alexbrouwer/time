@@ -89,7 +89,7 @@ class ChronoUnitTest extends EnumTestCase
     {
         $this->assertSame(365000, ChronoUnit::MILLENNIA()->getDuration()->toDays());
         $this->assertSame(36500, ChronoUnit::CENTURIES()->getDuration()->toDays());
-        $this->assertSame(36500, ChronoUnit::CENTURIES()->getDuration()->toDays());
+        $this->assertSame(3650, ChronoUnit::DECADES()->getDuration()->toDays());
         $this->assertSame(365, ChronoUnit::YEARS()->getDuration()->toDays());
         $this->assertSame(30, ChronoUnit::MONTHS()->getDuration()->toDays());
         $this->assertSame(7, ChronoUnit::WEEKS()->getDuration()->toDays());

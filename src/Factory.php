@@ -48,8 +48,15 @@ final class Factory
      *
      * @return DateTimeImmutable
      */
-    public static function create($year = null, $month = null, $day = null, $hour = null, $minute = null, $second = null, $tz = null): DateTimeImmutable
-    {
+    public static function create(
+        ?int $year = null,
+        ?int $month = null,
+        ?int $day = null,
+        ?int $hour = null,
+        ?int $minute = null,
+        ?int $second = null,
+        $tz = null
+    ): DateTimeImmutable {
         $year = $year ?? (int)date('Y');
         $month = $month ?? (int)date('n');
         $day = $day ?? (int)date('j');
@@ -63,7 +70,11 @@ final class Factory
             $second = $second ?? 0;
         }
 
-        $instance = static::createFromFormat('Y-n-j G:i:s', sprintf('%s-%s-%s %s:%02s:%02s', 0, $month, $day, $hour, $minute, $second), $tz);
+        $instance = static::createFromFormat(
+            'Y-n-j G:i:s',
+            sprintf('%s-%s-%s %s:%02s:%02s', 0, $month, $day, $hour, $minute, $second),
+            $tz
+        );
 
         return $instance->modify((int)$year . ' year');
     }
@@ -78,7 +89,7 @@ final class Factory
      *
      * @return DateTimeImmutable
      */
-    public static function createDate($year = null, $month = null, $day = null, $tz = null): DateTimeImmutable
+    public static function createDate(?int $year = null, ?int $month = null, ?int $day = null, $tz = null): DateTimeImmutable
     {
         return static::create($year, $month, $day, null, null, null, $tz);
     }
@@ -93,7 +104,7 @@ final class Factory
      * @return DateTimeImmutable
      * @throws InvalidArgumentException
      */
-    public static function createFromFormat($format, $time, $tz = null): DateTimeImmutable
+    public static function createFromFormat(string $format, string $time, $tz = null): DateTimeImmutable
     {
         if ($tz !== null) {
             $dt = DateTimeImmutable::createFromFormat($format, $time, static::safeCreateDateTimeZone($tz));
@@ -134,7 +145,7 @@ final class Factory
      *
      * @return DateTimeImmutable
      */
-    public static function createFromTimestamp($timestamp, $tz = null): DateTimeImmutable
+    public static function createFromTimestamp(int $timestamp, $tz = null): DateTimeImmutable
     {
         return static::now($tz)->setTimestamp($timestamp);
     }
@@ -149,7 +160,7 @@ final class Factory
      *
      * @return DateTimeImmutable
      */
-    public static function createTime($hour = null, $minute = null, $second = null, $tz = null): DateTimeImmutable
+    public static function createTime(?int $hour = null, ?int $minute = null, ?int $second = null, $tz = null): DateTimeImmutable
     {
         return static::create(null, null, null, $hour, $minute, $second, $tz);
     }
@@ -171,6 +182,29 @@ final class Factory
     }
 
     /**
+     * Determines if provided date time parts construct into a valid date
+     *
+     * @param int                      $year          The year to create an instance with.
+     * @param int                      $month         The month to create an instance with.
+     * @param int                      $day           The day to create an instance with.
+     * @param DateTimeZone|string|null $tz            The timezone for the instance. Defaults to default timezone.
+     * @param bool                     $allowWrapping Allow wrapping (April 31st to May 1st, )
+     *
+     * @return bool
+     */
+    public static function isValidDate(int $year, int $month, int $day, $tz = null, bool $allowWrapping = false): bool
+    {
+        DateTimeImmutable::createFromFormat(
+            'Y-n-j',
+            sprintf('%d-%d-%d', $year, $month, $day),
+            self::safeCreateDateTimeZone($tz)
+        );
+        $lastDateTimeErrors = DateTimeImmutable::getLastErrors();
+
+        return $lastDateTimeErrors['error_count'] === 0 && ($allowWrapping === true || $lastDateTimeErrors['warning_count'] === 0);
+    }
+
+    /**
      * Determines if provided time is according to format.
      *
      * @param string $format        The date() compatible format string.
@@ -179,7 +213,7 @@ final class Factory
      *
      * @return bool
      */
-    public static function isValidForFormat($format, $time, $allowWrapping = false): bool
+    public static function isValidForFormat(string $format, string $time, bool $allowWrapping = false): bool
     {
         DateTimeImmutable::createFromFormat($format, $time);
         $lastDateTimeErrors = DateTimeImmutable::getLastErrors();

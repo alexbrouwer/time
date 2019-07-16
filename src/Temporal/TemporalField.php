@@ -17,19 +17,7 @@ interface TemporalField extends ObjectInterface
      *
      * @return TemporalUnit
      */
-    public function getBaseUnit();
-
-    /**
-     * Gets the range that the field is bound by.
-     *
-     * The range of the field is the period that the field varies within. For example, in the field 'MonthOfYear', the
-     * range is 'Years'.
-     *
-     * @see TemporalField::getBaseUnit
-     *
-     * @return TemporalUnit
-     */
-    public function getRangeUnit();
+    public function getBaseUnit(): TemporalUnit;
 
     /**
      * Obtains the value of current field from a native DateTimeInterface object.
@@ -41,11 +29,26 @@ interface TemporalField extends ObjectInterface
     public function getFromNative(DateTimeInterface $dateTime): int;
 
     /**
-     * Gets the range of valid values for the field.
+     * Gets the range that the field is bound by.
      *
-     * @return ValueRange
+     * The range of the field is the period that the field varies within. For example, in the field 'MonthOfYear', the
+     * range is 'Years'.
+     *
+     * @see TemporalField::getBaseUnit
+     *
+     * @return TemporalUnit
      */
-    public function range(): ValueRange;
+    public function getRangeUnit(): TemporalUnit;
+
+    /**
+     * Checks if this field represents a component of a date.
+     *
+     * A field is date-based if it can be derived from EPOCH_DAY. Note that it is valid for both isDateBased() and
+     * isTimeBased() to return false, such as when representing a field like minute-of-week.
+     *
+     * @return bool
+     */
+    public function isDateBased(): bool;
 
     /**
      * Checks if this field is supported by the temporal object.
@@ -55,4 +58,21 @@ interface TemporalField extends ObjectInterface
      * @return bool
      */
     public function isSupportedBy(TemporalAccessor $temporalAccessor): bool;
+
+    /**
+     * Checks if this field represents a component of a time.
+     *
+     * A field is time-based if it can be derived from MICRO_OF_DAY. Note that it is valid for both isDateBased() and
+     * isTimeBased() to return false, such as when representing a field like minute-of-week.
+     *
+     * @return bool
+     */
+    public function isTimeBased(): bool;
+
+    /**
+     * Gets the range of valid values for the field.
+     *
+     * @return ValueRange
+     */
+    public function range(): ValueRange;
 }

@@ -2,11 +2,18 @@
 
 namespace PARTest\Time;
 
+use Mockery;
 use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Time\Chrono\ChronoField;
+use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\InvalidArgumentException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Factory;
+use PAR\Time\LocalDate;
+use PAR\Time\Month;
+use PAR\Time\Temporal\TemporalAmount;
 use PAR\Time\Year;
+use PAR\Time\YearMonth;
 
 class YearTest extends TimeTestCase
 {
@@ -60,12 +67,12 @@ class YearTest extends TimeTestCase
         self::assertFalse(Year::of(1901)->isLeap()); // not divisible by 4
     }
 
-    public function testFromNative(): void
+    public function testCanCreateOfNative(): void
     {
         $expected = 2018;
         $dt = Factory::createDate($expected, 3, 4);
 
-        $year = Year::fromNative($dt);
+        $year = Year::ofNative($dt);
 
         self::assertSameYear($dt, $year->getValue());
     }
@@ -105,12 +112,19 @@ class YearTest extends TimeTestCase
         $this->assertSame($expected, $year->supportsField($field));
     }
 
-    public function testGet()
+    public function testGet(): void
     {
         $expected = 2015;
         $year = Year::of($expected);
 
         $this->assertSame($expected, $year->get(ChronoField::YEAR()));
+    }
+
+    public function testGetWithUnsupportedFieldThrowsException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+
+        Year::of(2000)->get(ChronoField::MONTH_OF_YEAR());
     }
 
     /**
@@ -168,5 +182,83 @@ class YearTest extends TimeTestCase
     {
         $this->assertSame(365, Year::of(1995)->length());
         $this->assertSame(366, Year::of(2000)->length());
+    }
+
+    public function testAddAmount(): void
+    {
+        $year = Year::of(2000);
+
+        $amount = Mockery::mock(TemporalAmount::class);
+        $amount->shouldReceive('addTo')
+            ->with($year)
+            ->andReturn(Year::of(2010));
+
+        $result = $year->plusAmount($amount);
+        $this->assertNotSame($year, $result);
+    }
+
+    public function testSubtractAmount(): void
+    {
+        $year = Year::of(2010);
+
+        $amount = Mockery::mock(TemporalAmount::class);
+        $amount->shouldReceive('subtractFrom')
+            ->with($year)
+            ->andReturn(Year::of(2000));
+
+        $result = $year->minusAmount($amount);
+        $this->assertNotSame($year, $result);
+    }
+
+    public function testAddUnit(): void
+    {
+        self::assertSameObject(Year::of(2001), Year::of(2000)->plus(1, ChronoUnit::YEARS()));
+        self::assertSameObject(Year::of(2010), Year::of(2000)->plus(1, ChronoUnit::DECADES()));
+        self::assertSameObject(Year::of(2100), Year::of(2000)->plus(1, ChronoUnit::CENTURIES()));
+        self::assertSameObject(Year::of(3000), Year::of(2000)->plus(1, ChronoUnit::MILLENNIA()));
+    }
+
+    public function testAddUnitWithUnsupportedUnitThrowsException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+
+        Year::of(2000)->plus(1, ChronoUnit::MONTHS());
+    }
+
+    public function testAddYears(): void
+    {
+        self::assertSameObject(Year::of(2003), Year::of(2000)->plusYears(3));
+        self::assertSameObject(Year::of(1997), Year::of(2000)->plusYears(-3));
+    }
+
+    public function testSubtractUnit(): void
+    {
+        self::assertSameObject(Year::of(1999), Year::of(2000)->minus(1, ChronoUnit::YEARS()));
+        self::assertSameObject(Year::of(1990), Year::of(2000)->minus(1, ChronoUnit::DECADES()));
+        self::assertSameObject(Year::of(1900), Year::of(2000)->minus(1, ChronoUnit::CENTURIES()));
+        self::assertSameObject(Year::of(1000), Year::of(2000)->minus(1, ChronoUnit::MILLENNIA()));
+    }
+
+    public function testSubtractUnitWithUnsupportedUnitThrowsException(): void
+    {
+        $this->expectException(UnsupportedTemporalTypeException::class);
+
+        Year::of(2000)->minus(1, ChronoUnit::MONTHS());
+    }
+
+    public function testSubtractYears(): void
+    {
+        self::assertSameObject(Year::of(1997), Year::of(2000)->minusYears(3));
+        self::assertSameObject(Year::of(2003), Year::of(2000)->minusYears(-3));
+    }
+
+    public function testTransformToYearMonth(): void
+    {
+        self::assertSameObject(YearMonth::of(2000, 4), Year::of(2000)->atMonth(Month::of(4)));
+    }
+
+    public function testTransformToLocalDate(): void
+    {
+        self::assertSameObject(LocalDate::of(2000, 4, 10), Year::of(2000)->atDay(100));
     }
 }

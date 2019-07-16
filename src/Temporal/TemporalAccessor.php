@@ -2,10 +2,9 @@
 
 namespace PAR\Time\Temporal;
 
-use PAR\Core\ObjectInterface;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 
-interface TemporalAccessor extends ObjectInterface
+interface TemporalAccessor
 {
     /**
      * Checks if the specified field is supported.

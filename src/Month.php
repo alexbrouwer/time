@@ -37,8 +37,8 @@ use PAR\Time\Temporal\TemporalField;
  */
 final class Month extends Enum implements TemporalAccessor
 {
-    private const MIN_VALUE = 1;
-    private const MAX_VALUE = 12;
+    public const MIN_VALUE = 1;
+    public const MAX_VALUE = 12;
 
     protected const APRIL = [4];
     protected const AUGUST = [8];

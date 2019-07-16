@@ -2,7 +2,8 @@
 
 namespace PAR\Time;
 
-use PAR\Time\Exception\UnsupportedTemporalTypeException;
+use PAR\Core\ComparableInterface;
+use PAR\Core\ObjectInterface;
 use PAR\Time\Temporal\Temporal;
 use PAR\Time\Temporal\TemporalAmount;
 use PAR\Time\Temporal\TemporalField;
@@ -11,15 +12,22 @@ use PAR\Time\Temporal\TemporalUnit;
 /**
  * A time without a time-zone in the ISO-8601 calendar system, such as 10:15:30.
  */
-final class LocalTime implements Temporal
+final class LocalTime implements Temporal, ObjectInterface, ComparableInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function compareTo(ComparableInterface $other): int
+    {
+        // TODO: Implement compareTo() method.
+    }
+
     /**
      * @inheritDoc
      */
     public function equals($other): bool
     {
         // TODO: Implement equals() method.
-        return false;
     }
 
     /**
@@ -28,31 +36,12 @@ final class LocalTime implements Temporal
     public function toString(): string
     {
         // TODO: Implement toString() method.
-        return '00:00:00';
     }
 
     /**
      * @inheritDoc
      */
-    public function supportsField(TemporalField $field): bool
-    {
-        // TODO: Implement supportsField() method.
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get(TemporalField $field): int
-    {
-        // TODO: Implement get() method.
-        throw UnsupportedTemporalTypeException::forField($field);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function plus(int $amountToAdd, TemporalUnit $unit)
+    public function plus(int $amountToAdd, TemporalUnit $unit): Temporal
     {
         // TODO: Implement plus() method.
     }
@@ -60,7 +49,7 @@ final class LocalTime implements Temporal
     /**
      * @inheritDoc
      */
-    public function plusAmount(TemporalAmount $amount)
+    public function plusAmount(TemporalAmount $amount): Temporal
     {
         // TODO: Implement plusAmount() method.
     }
@@ -68,7 +57,7 @@ final class LocalTime implements Temporal
     /**
      * @inheritDoc
      */
-    public function minus(int $amountToSubtract, TemporalUnit $unit)
+    public function minus(int $amountToSubtract, TemporalUnit $unit): Temporal
     {
         // TODO: Implement minus() method.
     }
@@ -76,7 +65,7 @@ final class LocalTime implements Temporal
     /**
      * @inheritDoc
      */
-    public function minusAmount(TemporalAmount $amount)
+    public function minusAmount(TemporalAmount $amount): Temporal
     {
         // TODO: Implement minusAmount() method.
     }
@@ -87,5 +76,21 @@ final class LocalTime implements Temporal
     public function supportsUnit(TemporalUnit $unit): bool
     {
         // TODO: Implement supportsUnit() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supportsField(TemporalField $field): bool
+    {
+        // TODO: Implement supportsField() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(TemporalField $field): int
+    {
+        // TODO: Implement get() method.
     }
 }

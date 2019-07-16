@@ -16,6 +16,60 @@ class ChronoFieldTest extends EnumTestCase
 {
     use CoreAssertions;
 
+    public function testDayOfMonth(): void
+    {
+        $field = ChronoField::DAY_OF_MONTH();
+
+        $native = Factory::create(2018, 3, 4, 5, 6, 7);
+
+        self::assertSameObject(ChronoUnit::DAYS(), $field->getBaseUnit());
+        self::assertSameObject(ChronoUnit::MONTHS(), $field->getRangeUnit());
+        self::assertSame((int)$native->format('j'), $field->getFromNative($native));
+        self::assertSameObject(ValueRange::ofVariableMax(1, 28, 31), $field->range());
+        self::assertTrue($field->isDateBased());
+        self::assertFalse($field->isTimeBased());
+    }
+
+    public function testDayOfWeek(): void
+    {
+        $field = ChronoField::DAY_OF_WEEK();
+
+        $native = Factory::create(2018, 3, 4, 5, 6, 7);
+
+        self::assertSameObject(ChronoUnit::DAYS(), $field->getBaseUnit());
+        self::assertSameObject(ChronoUnit::WEEKS(), $field->getRangeUnit());
+        self::assertSame((int)$native->format('N'), $field->getFromNative($native));
+        self::assertSameObject(ValueRange::ofFixed(1, 7), $field->range());
+        self::assertTrue($field->isDateBased());
+        self::assertFalse($field->isTimeBased());
+    }
+
+    public function testIsSupportedBy(): void
+    {
+
+        $field = ChronoField::MONTH_OF_YEAR();
+
+        $expected = true;
+        $temporal = Mockery::mock(TemporalAccessor::class);
+        $temporal->shouldReceive('supportsField')->with($field)->andReturn($expected);
+
+        self::assertSame($expected, $field->isSupportedBy($temporal));
+    }
+
+    public function testMonthOfYear(): void
+    {
+        $field = ChronoField::MONTH_OF_YEAR();
+
+        $native = Factory::create(2018, 3, 4, 5, 6, 7);
+
+        self::assertSameObject(ChronoUnit::MONTHS(), $field->getBaseUnit());
+        self::assertSameObject(ChronoUnit::YEARS(), $field->getRangeUnit());
+        self::assertSame((int)$native->format('n'), $field->getFromNative($native));
+        self::assertSameObject(ValueRange::ofFixed(1, 12), $field->range());
+        self::assertTrue($field->isDateBased());
+        self::assertFalse($field->isTimeBased());
+    }
+
     public function testValues(): void
     {
         self::assertSame(
@@ -29,42 +83,6 @@ class ChronoFieldTest extends EnumTestCase
         );
     }
 
-    public function testDayOfWeek(): void
-    {
-        $field = ChronoField::DAY_OF_WEEK();
-
-        $native = Factory::create(2018, 3, 4, 5, 6, 7);
-
-        self::assertSameObject(ChronoUnit::DAYS(), $field->getBaseUnit());
-        self::assertSameObject(ChronoUnit::WEEKS(), $field->getRangeUnit());
-        self::assertSame((int)$native->format('N'), $field->getFromNative($native));
-        self::assertSameObject(ValueRange::ofFixed(1, 7), $field->range());
-    }
-
-    public function testDayOfMonth(): void
-    {
-        $field = ChronoField::DAY_OF_MONTH();
-
-        $native = Factory::create(2018, 3, 4, 5, 6, 7);
-
-        self::assertSameObject(ChronoUnit::DAYS(), $field->getBaseUnit());
-        self::assertSameObject(ChronoUnit::MONTHS(), $field->getRangeUnit());
-        self::assertSame((int)$native->format('j'), $field->getFromNative($native));
-        self::assertSameObject(ValueRange::ofVariableMax(1, 28, 31), $field->range());
-    }
-
-    public function testMonthOfYear(): void
-    {
-        $field = ChronoField::MONTH_OF_YEAR();
-
-        $native = Factory::create(2018, 3, 4, 5, 6, 7);
-
-        self::assertSameObject(ChronoUnit::MONTHS(), $field->getBaseUnit());
-        self::assertSameObject(ChronoUnit::YEARS(), $field->getRangeUnit());
-        self::assertSame((int)$native->format('n'), $field->getFromNative($native));
-        self::assertSameObject(ValueRange::ofFixed(1, 12), $field->range());
-    }
-
     public function testYear(): void
     {
         $field = ChronoField::YEAR();
@@ -75,17 +93,7 @@ class ChronoFieldTest extends EnumTestCase
         self::assertSameObject(ChronoUnit::FOREVER(), $field->getRangeUnit());
         self::assertSame((int)$native->format('Y'), $field->getFromNative($native));
         self::assertSameObject(ValueRange::ofFixed(Year::MIN_VALUE, Year::MAX_VALUE), $field->range());
-    }
-
-    public function testIsSupportedBy(): void
-    {
-
-        $field = ChronoField::MONTH_OF_YEAR();
-
-        $expected = true;
-        $temporal = Mockery::mock(TemporalAccessor::class);
-        $temporal->shouldReceive('supportsField')->with($field)->andReturn($expected);
-
-        self::assertSame($expected, $field->isSupportedBy($temporal));
+        self::assertTrue($field->isDateBased());
+        self::assertFalse($field->isTimeBased());
     }
 }
