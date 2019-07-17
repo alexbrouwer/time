@@ -48,7 +48,14 @@ class PeriodTest extends TestCase
 
     public function testCanAddAmount(): void
     {
-        self::assertSameObject(Period::ofDays(3), Period::ofDays(2)->plusAmount(Period::ofDays(1)));
+        self::assertSameObject(
+            Period::ofDays(3),
+            Period::ofDays(2)->plusAmount(Period::ofDays(1))
+        );
+        self::assertSameObject(
+            Period::ofDays(3),
+            Period::ofDays(2)->plusAmount($this->createValidTemporalAmount(0, 0, 1))
+        );
     }
 
     public function testCanAddDays(): void
@@ -98,6 +105,15 @@ class PeriodTest extends TestCase
         $period = Period::ofDays(2);
 
         self::assertSameObject(Period::ofDays(6), $period->multipliedBy(3));
+    }
+
+    public function testCanDetermineEquality(): void
+    {
+        $period = Period::ofDays(1);
+
+        self::assertTrue($period->equals(Period::ofDays(1)));
+        self::assertFalse($period->equals(Period::ofMonths(1)));
+        self::assertFalse($period->equals(null));
     }
 
     public function testCanDetermineNegativity(): void
@@ -151,7 +167,14 @@ class PeriodTest extends TestCase
 
     public function testCanSubtractAmount(): void
     {
-        self::assertSameObject(Period::ofDays(1), Period::ofDays(2)->minusAmount(Period::ofDays(1)));
+        self::assertSameObject(
+            Period::ofDays(1),
+            Period::ofDays(2)->minusAmount(Period::ofDays(1))
+        );
+        self::assertSameObject(
+            Period::ofDays(1),
+            Period::ofDays(2)->minusAmount($this->createValidTemporalAmount(0, 0, 1))
+        );
     }
 
     public function testCanSubtractDays(): void
@@ -215,6 +238,9 @@ class PeriodTest extends TestCase
     {
         self::assertSameObject(Period::of(1, 2, 3), Period::from(Period::of(1, 2, 3)));
         self::assertSameObject(Period::zero(), Period::from(Duration::ofDays(1)));
+
+        $amount = $this->createValidTemporalAmount(1, 2, 3);
+        self::assertSameObject(Period::of(1, 2, 3), Period::from($amount));
     }
 
     /**
@@ -309,5 +335,28 @@ class PeriodTest extends TestCase
         self::assertSame(0, $period->getMonths());
         self::assertSame(0, $period->getDays());
         self::assertTrue($period->isZero());
+    }
+
+    private function createMockedTemporalAmount(EnumMap $units): TemporalAmount
+    {
+        $amount = Mockery::mock(TemporalAmount::class);
+        $supported = [];
+        foreach ($units as $unit => $value) {
+            $supported[] = $unit;
+            $amount->shouldReceive('get')->with($unit)->andReturn($value);
+        }
+        $amount->shouldReceive('getUnits')->andReturn($supported);
+
+        return $amount;
+    }
+
+    private function createValidTemporalAmount(int $years, int $months, int $days): TemporalAmount
+    {
+        $map = EnumMap::for(ChronoUnit::class, 'int', false);
+        $map->put(ChronoUnit::YEARS(), $years);
+        $map->put(ChronoUnit::MONTHS(), $months);
+        $map->put(ChronoUnit::DAYS(), $days);
+
+        return $this->createMockedTemporalAmount($map);
     }
 }
