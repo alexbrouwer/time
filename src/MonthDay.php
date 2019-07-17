@@ -33,9 +33,9 @@ final class MonthDay implements Temporal, ObjectInterface, ComparableInterface
     /**
      * @inheritDoc
      */
-    public function toString(): string
+    public function get(TemporalField $field): int
     {
-        // TODO: Implement toString() method.
+        // TODO: Implement get() method.
     }
 
     /**
@@ -43,27 +43,7 @@ final class MonthDay implements Temporal, ObjectInterface, ComparableInterface
      *
      * @return self
      */
-    public function plus(int $amountToAdd, TemporalUnit $unit): Temporal
-    {
-        // TODO: Implement plus() method.
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @return self
-     */
-    public function plusAmount(TemporalAmount $amount): Temporal
-    {
-        // TODO: Implement plusAmount() method.
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @return self
-     */
-    public function minus(int $amountToSubtract, TemporalUnit $unit): Temporal
+    public function minus(int $amountToSubtract, TemporalUnit $unit): self
     {
         // TODO: Implement minus() method.
     }
@@ -73,17 +53,29 @@ final class MonthDay implements Temporal, ObjectInterface, ComparableInterface
      *
      * @return self
      */
-    public function minusAmount(TemporalAmount $amount): Temporal
+    public function minusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement minusAmount() method.
     }
 
     /**
      * @inheritDoc
+     *
+     * @return self
      */
-    public function supportsUnit(TemporalUnit $unit): bool
+    public function plus(int $amountToAdd, TemporalUnit $unit): self
     {
-        // TODO: Implement supportsUnit() method.
+        // TODO: Implement plus() method.
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @return self
+     */
+    public function plusAmount(TemporalAmount $amount): self
+    {
+        // TODO: Implement plusAmount() method.
     }
 
     /**
@@ -97,8 +89,16 @@ final class MonthDay implements Temporal, ObjectInterface, ComparableInterface
     /**
      * @inheritDoc
      */
-    public function get(TemporalField $field): int
+    public function supportsUnit(TemporalUnit $unit): bool
     {
-        // TODO: Implement get() method.
+        // TODO: Implement supportsUnit() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        // TODO: Implement toString() method.
     }
 }

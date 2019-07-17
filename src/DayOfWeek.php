@@ -88,11 +88,15 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     }
 
     /**
-     * @param int $value
+     * @inheritDoc
      */
-    protected function __construct(int $value)
+    public function get(TemporalField $field): int
     {
-        $this->value = $value;
+        if ($this->supportsField($field)) {
+            return $this->getValue();
+        }
+
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 
     /**
@@ -103,6 +107,20 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     public function getValue(): int
     {
         return $this->value;
+    }
+
+    /**
+     * Returns the day-of-week that is the specified number of days before this one.
+     *
+     * The calculation rolls around the start of the year from Monday to Sunday. The specified period may be negative.
+     *
+     * @param int $days The days to subtract, positive or negative
+     *
+     * @return DayOfWeek
+     */
+    public function minus(int $days): self
+    {
+        return $this->plus($days * -1);
     }
 
     /**
@@ -142,20 +160,6 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     }
 
     /**
-     * Returns the day-of-week that is the specified number of days before this one.
-     *
-     * The calculation rolls around the start of the year from Monday to Sunday. The specified period may be negative.
-     *
-     * @param int $days The days to subtract, positive or negative
-     *
-     * @return DayOfWeek
-     */
-    public function minus(int $days): self
-    {
-        return $this->plus($days * -1);
-    }
-
-    /**
      * Checks if the specified field is supported.
      *
      * This checks if this day-of-week can be queried for the specified field. If false, then calling the range and get
@@ -174,14 +178,10 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     }
 
     /**
-     * @inheritDoc
+     * @param int $value
      */
-    public function get(TemporalField $field): int
+    protected function __construct(int $value)
     {
-        if ($this->supportsField($field)) {
-            return $this->getValue();
-        }
-
-        throw UnsupportedTemporalTypeException::forField($field);
+        $this->value = $value;
     }
 }

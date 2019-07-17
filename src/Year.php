@@ -5,8 +5,8 @@ namespace PAR\Time;
 use DateTimeInterface;
 use PAR\Core\ComparableInterface;
 use PAR\Core\Exception\ClassMismatchException;
-use PAR\Core\Helper\InstanceHelper;
 use PAR\Core\ObjectInterface;
+use PAR\Enum\EnumMap;
 use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\InvalidArgumentException;
@@ -23,6 +23,11 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
 {
     public const MIN_VALUE = -999999999;
     public const MAX_VALUE = 999999999;
+
+    /**
+     * @var EnumMap|array<ChronoUnit, bool>
+     */
+    private static $units;
 
     /**
      * @var int
@@ -323,16 +328,11 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
      */
     public function supportsUnit(TemporalUnit $unit): bool
     {
-        return $unit->isDateBased()
-            && InstanceHelper::isAnyOf(
-                $unit,
-                [
-                    ChronoUnit::YEARS(),
-                    ChronoUnit::DECADES(),
-                    ChronoUnit::CENTURIES(),
-                    ChronoUnit::MILLENNIA(),
-                ]
-            );
+        if ($unit instanceof ChronoUnit) {
+            return $this->getUnitMap()->containsKey($unit);
+        }
+
+        return $unit->isSupportedBy($this);
     }
 
     /**
@@ -341,6 +341,23 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
     public function toString(): string
     {
         return (string)$this->value;
+    }
+
+    /**
+     * @return EnumMap|array<ChronoField, bool>
+     */
+    private function getUnitMap(): EnumMap
+    {
+        if (!static::$units) {
+            $map = EnumMap::for(ChronoUnit::class, 'boolean', false);
+            $map->put(ChronoUnit::YEARS(), true);
+            $map->put(ChronoUnit::DECADES(), true);
+            $map->put(ChronoUnit::CENTURIES(), true);
+            $map->put(ChronoUnit::MILLENNIA(), true);
+            static::$units = $map;
+        }
+
+        return static::$units;
     }
 
     /**

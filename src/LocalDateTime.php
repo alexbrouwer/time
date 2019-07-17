@@ -33,49 +33,45 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     /**
      * @inheritDoc
      */
-    public function toString(): string
+    public function get(TemporalField $field): int
     {
-        // TODO: Implement toString() method.
+        // TODO: Implement get() method.
     }
 
     /**
      * @inheritDoc
+     * @return self
      */
-    public function plus(int $amountToAdd, TemporalUnit $unit): Temporal
-    {
-        // TODO: Implement plus() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function plusAmount(TemporalAmount $amount): Temporal
-    {
-        // TODO: Implement plusAmount() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function minus(int $amountToSubtract, TemporalUnit $unit): Temporal
+    public function minus(int $amountToSubtract, TemporalUnit $unit): self
     {
         // TODO: Implement minus() method.
     }
 
     /**
      * @inheritDoc
+     * @return self
      */
-    public function minusAmount(TemporalAmount $amount): Temporal
+    public function minusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement minusAmount() method.
     }
 
     /**
      * @inheritDoc
+     * @return self
      */
-    public function supportsUnit(TemporalUnit $unit): bool
+    public function plus(int $amountToAdd, TemporalUnit $unit): self
     {
-        // TODO: Implement supportsUnit() method.
+        // TODO: Implement plus() method.
+    }
+
+    /**
+     * @inheritDoc
+     * @return self
+     */
+    public function plusAmount(TemporalAmount $amount): self
+    {
+        // TODO: Implement plusAmount() method.
     }
 
     /**
@@ -89,8 +85,16 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     /**
      * @inheritDoc
      */
-    public function get(TemporalField $field): int
+    public function supportsUnit(TemporalUnit $unit): bool
     {
-        // TODO: Implement get() method.
+        // TODO: Implement supportsUnit() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        // TODO: Implement toString() method.
     }
 }
