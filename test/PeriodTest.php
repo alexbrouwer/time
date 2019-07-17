@@ -2,12 +2,16 @@
 
 namespace PARTest\Time;
 
+use Mockery;
 use PAR\Core\PHPUnit\CoreAssertions;
+use PAR\Enum\EnumMap;
 use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Duration;
+use PAR\Time\Exception\DateTimeException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\LocalDate;
 use PAR\Time\Period;
+use PAR\Time\Temporal\TemporalAmount;
 use PHPUnit\Framework\TestCase;
 
 class PeriodTest extends TestCase
@@ -25,6 +29,7 @@ class PeriodTest extends TestCase
             'negative-years'  => ['P-1Y2M3D', Period::of(-1, 2, 3)],
             'negative-months' => ['P1Y-2M3D', Period::of(1, -2, 3)],
             'negative-days'   => ['P1Y2M-3D', Period::of(1, 2, -3)],
+            'negative-weeks'  => ['P-2W', Period::ofWeeks(-2)],
         ];
     }
 
@@ -137,19 +142,6 @@ class PeriodTest extends TestCase
         self::assertSameObject(Period::of(2, 3, 35), $period->normalized());
     }
 
-    /**
-     * @dataProvider provideForParse
-     *
-     * @param string   $text
-     * @param Duration $expected
-     */
-    public function testCanParseString(string $text, Period $expected): void
-    {
-        $duration = Period::parse($text);
-
-        self::assertSameObject($expected, $duration);
-    }
-
     public function testCanRetrieveTotalAmountOfMonths(): void
     {
         $period = Period::of(2, 2, 2);
@@ -223,6 +215,26 @@ class PeriodTest extends TestCase
     {
         self::assertSameObject(Period::of(1, 2, 3), Period::from(Period::of(1, 2, 3)));
         self::assertSameObject(Period::zero(), Period::from(Duration::ofDays(1)));
+    }
+
+    /**
+     * @dataProvider provideForParse
+     *
+     * @param string   $text
+     * @param Duration $expected
+     */
+    public function testCreateFromString(string $text, Period $expected): void
+    {
+        $period = Period::parse($text);
+
+        self::assertSameObject($expected, $period);
+    }
+
+    public function testCreateFromStringThrowsExceptionWhenTextInWrongFormat(): void
+    {
+        $this->expectException(DateTimeException::class);
+
+        Period::parse('abc');
     }
 
     public function testCreateWithOnlyDays(): void
