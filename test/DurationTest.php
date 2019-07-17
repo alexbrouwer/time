@@ -123,7 +123,7 @@ class DurationTest extends MockeryTestCase
 
     public function testCanAddUnit(): void
     {
-        self::assertSameObject(Duration::ofDays(3), Duration::ofDays(2)->plus(1, ChronoUnit::DAYS()));
+        self::assertSameObject(Duration::ofSeconds(3), Duration::ofSeconds(2)->plus(1, ChronoUnit::SECONDS()));
     }
 
     public function testCanBeDividedByNegativeValue(): void
@@ -334,7 +334,7 @@ class DurationTest extends MockeryTestCase
 
     public function testCanSubtractUnit(): void
     {
-        self::assertSameObject(Duration::ofDays(1), Duration::ofDays(2)->minus(1, ChronoUnit::DAYS()));
+        self::assertSameObject(Duration::ofSeconds(1), Duration::ofSeconds(2)->minus(1, ChronoUnit::SECONDS()));
     }
 
     /**
