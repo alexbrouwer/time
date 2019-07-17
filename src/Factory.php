@@ -57,7 +57,8 @@ final class Factory
         ?int $second = null,
         $tz = null
     ): DateTimeImmutable {
-        $currentTime = self::getTestNow() ? self::getTestNow()->getTimestamp() : time();
+        $test = self::getTestNow();
+        $currentTime = $test instanceof DateTimeImmutable ? $test->getTimestamp() : time();
 
         $year = $year ?? (int)date('Y', $currentTime);
         $month = $month ?? (int)date('n', $currentTime);
