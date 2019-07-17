@@ -30,7 +30,7 @@
     "require": {
         "php": "^7.2",
         "par/core": "^1.1",
-        "par/enum": "^1.3",
+        "par/enum": "^1.4",
         "webmozart/assert": "^1.4"
     },
     "require-dev": {
