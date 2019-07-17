@@ -57,14 +57,16 @@ final class Factory
         ?int $second = null,
         $tz = null
     ): DateTimeImmutable {
-        $year = $year ?? (int)date('Y');
-        $month = $month ?? (int)date('n');
-        $day = $day ?? (int)date('j');
+        $currentTime = self::getTestNow() ? self::getTestNow()->getTimestamp() : time();
+
+        $year = $year ?? (int)date('Y', $currentTime);
+        $month = $month ?? (int)date('n', $currentTime);
+        $day = $day ?? (int)date('j', $currentTime);
 
         if ($hour === null) {
-            $hour = (int)date('G');
-            $minute = $minute ?? (int)date('i');
-            $second = $second ?? (int)date('s');
+            $hour = (int)date('G', $currentTime);
+            $minute = $minute ?? (int)date('i', $currentTime);
+            $second = $second ?? (int)date('s', $currentTime);
         } else {
             $minute = $minute ?? 0;
             $second = $second ?? 0;
