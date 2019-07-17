@@ -26,7 +26,7 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
     public const MAX_VALUE = 999999999;
 
     /**
-     * @var EnumMap|array<ChronoUnit, bool>
+     * @var EnumMap|null
      */
     private static $units;
 
@@ -365,20 +365,20 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
     }
 
     /**
-     * @return EnumMap|array<ChronoUnit, bool>
+     * @return EnumMap
      */
     private function getUnitMap(): EnumMap
     {
-        if (!static::$units) {
+        if (!self::$units) {
             $map = EnumMap::for(ChronoUnit::class, 'boolean', false);
             $map->put(ChronoUnit::YEARS(), true);
             $map->put(ChronoUnit::DECADES(), true);
             $map->put(ChronoUnit::CENTURIES(), true);
             $map->put(ChronoUnit::MILLENNIA(), true);
-            static::$units = $map;
+            self::$units = $map;
         }
 
-        return static::$units;
+        return self::$units;
     }
 
     /**
