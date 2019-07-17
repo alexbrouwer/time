@@ -121,6 +121,11 @@ class DurationTest extends MockeryTestCase
 //        self::assertSameObject(LocalTime::of(1, 2, 4), $result);
     }
 
+    public function testCanAddUnit(): void
+    {
+        self::assertSameObject(Duration::ofDays(3), Duration::ofDays(2)->plus(1, ChronoUnit::DAYS()));
+    }
+
     public function testCanBeDividedByNegativeValue(): void
     {
         $duration = Duration::ofSeconds(10, 3)->dividedBy(-3);
@@ -327,6 +332,11 @@ class DurationTest extends MockeryTestCase
         self::assertSameObject(Duration::ofSeconds(1), Duration::ofSeconds(2)->minusSeconds(1));
     }
 
+    public function testCanSubtractUnit(): void
+    {
+        self::assertSameObject(Duration::ofDays(1), Duration::ofDays(2)->minus(1, ChronoUnit::DAYS()));
+    }
+
     /**
      * @dataProvider provideForToString
      *
@@ -424,6 +434,11 @@ class DurationTest extends MockeryTestCase
         $this->expectException(UnsupportedTemporalTypeException::class);
 
         Duration::of(1, ChronoUnit::MONTHS());
+    }
+
+    public function testCreateWithZeroAmountReturnsZero(): void
+    {
+        self::assertSameObject(Duration::zero(), Duration::of(0, ChronoUnit::MINUTES()));
     }
 
     /**
