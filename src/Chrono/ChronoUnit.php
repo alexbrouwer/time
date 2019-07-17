@@ -5,6 +5,7 @@ namespace PAR\Time\Chrono;
 use PAR\Enum\Enum;
 use PAR\Time\Duration;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
+use PAR\Time\Temporal\Temporal;
 use PAR\Time\Temporal\TemporalUnit;
 
 /**
@@ -155,5 +156,13 @@ final class ChronoUnit extends Enum implements TemporalUnit
         }
 
         throw UnsupportedTemporalTypeException::forUnit($this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSupportedBy(Temporal $temporal): bool
+    {
+        return $temporal->supportsUnit($this);
     }
 }
