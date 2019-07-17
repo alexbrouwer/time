@@ -38,7 +38,7 @@
         "par/coding-standard": "^1.0",
         "par/maker": "^1.0",
         "phpstan/phpstan": "^0.11.8",
-        "phpunit/phpunit": "^8.1",
+        "phpunit/phpunit": "^8.2",
         "roave/security-advisories": "dev-master"
     },
     "scripts": {
