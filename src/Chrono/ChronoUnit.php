@@ -40,7 +40,7 @@ final class ChronoUnit extends Enum implements TemporalUnit
     protected const YEARS = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS];
     protected const DECADES = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::DECADE_IN_YEARS];
     protected const CENTURIES = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::CENTURY_IN_YEARS];
-    protected const MILLENNIA = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::MILLENIUM_IN_YEARS];
+    protected const MILLENNIA = [true, false, self::DAY_IN_SECONDS * self::YEAR_IN_DAYS * self::MILLENNIUM_IN_YEARS];
     protected const FOREVER = [false, false, PHP_INT_MAX];
 
     private const MILLI_IN_MICROS = 1000;
@@ -52,7 +52,7 @@ final class ChronoUnit extends Enum implements TemporalUnit
     private const YEAR_IN_MONTHS = 12;
     private const DECADE_IN_YEARS = 10;
     private const CENTURY_IN_YEARS = 100;
-    private const MILLENIUM_IN_YEARS = 1000;
+    private const MILLENNIUM_IN_YEARS = 1000;
 
     private const HOUR_IN_SECONDS = self::MINUTE_IN_SECONDS * self::HOUR_IN_MINUTES;
     private const DAY_IN_MINUTES = self::DAY_IN_HOURS * self::HOUR_IN_MINUTES;
