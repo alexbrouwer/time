@@ -179,7 +179,7 @@ class DurationTest extends MockeryTestCase
 
         self::assertTrue($duration->equals(Duration::ofDays(1)));
         self::assertFalse($duration->equals(Duration::ofHours(1)));
-        self::assertFalse($duration->equals(false));
+        self::assertFalse($duration->equals(null));
     }
 
     public function testCanDetermineNegativity(): void
@@ -486,8 +486,9 @@ class DurationTest extends MockeryTestCase
     public function testMicroSecondOverflowing(): void
     {
         $expected = Duration::ofSeconds(3, 1);
-        self::assertTrue($expected->equals(Duration::ofSeconds(4, -999999)));
-        self::assertTrue($expected->equals(Duration::ofSeconds(2, 1000001)));
+
+        self::assertSameObject($expected, Duration::ofSeconds(4, -999999));
+        self::assertSameObject($expected, Duration::ofSeconds(2, 1000001));
     }
 
     public function testParseWillThrowDateTimeExceptionWhenInvalidText(): void
