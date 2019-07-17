@@ -11,6 +11,7 @@ use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Factory;
 use PAR\Time\LocalDate;
 use PAR\Time\Month;
+use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\TemporalAmount;
 use PAR\Time\Year;
 use PAR\Time\YearMonth;
@@ -114,6 +115,14 @@ class YearTest extends TimeTestCase
         self::assertSameObject($expectedYear, Year::parse($text));
     }
 
+    public function testCanCreateFromTemporal(): void
+    {
+        $temporal = \Mockery::mock(TemporalAccessor::class);
+        $temporal->shouldReceive('get')->with(ChronoField::YEAR())->andReturn(2000);
+
+        self::assertSameObject(Year::of(2000), Year::from($temporal));
+    }
+
     public function testCanCreateOfNative(): void
     {
         $expected = 2018;
@@ -122,6 +131,14 @@ class YearTest extends TimeTestCase
         $year = Year::ofNative($dt);
 
         self::assertSameYear($dt, $year->getValue());
+    }
+
+    public function testCanDetermineEquality(): void
+    {
+        self::assertTrue(Year::of(2000)->equals(Year::of(2000)));
+        self::assertFalse(Year::of(2001)->equals(Year::of(2000)));
+        self::assertFalse(Year::of(2000)->equals(Year::of(2001)));
+        self::assertFalse(Year::of(2000)->equals(null));
     }
 
     public function testCanDetermineSelfIsAfter(): void
@@ -241,14 +258,6 @@ class YearTest extends TimeTestCase
         self::assertFalse(Year::isLeapYear(1901)); // not divisible by 4
 
         self::assertFalse(Year::isLeapYear(0)); // not divisible at all
-    }
-
-    public function testEquality(): void
-    {
-        self::assertTrue(Year::of(2000)->equals(Year::of(2000)));
-        self::assertFalse(Year::of(2001)->equals(Year::of(2000)));
-        self::assertFalse(Year::of(2000)->equals(Year::of(2001)));
-        self::assertFalse(Year::of(2000)->equals(null));
     }
 
     public function testRetrievingUnsupportedUnitThrowsException(): void

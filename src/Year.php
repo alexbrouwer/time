@@ -12,6 +12,7 @@ use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\InvalidArgumentException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\Temporal;
+use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\TemporalAmount;
 use PAR\Time\Temporal\TemporalField;
 use PAR\Time\Temporal\TemporalUnit;
@@ -33,6 +34,26 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
      * @var int
      */
     private $value;
+
+    /**
+     * Obtains an instance of Year from a temporal object.
+     *
+     * This obtains a year based on the specified temporal. A TemporalAccessor represents an arbitrary set of date and
+     * time information, which this factory converts to an instance of Year.
+     *
+     * The conversion extracts the year field. The extraction is only permitted if the temporal object has an ISO
+     * chronology, or can be converted to a LocalDate.
+     *
+     * @param TemporalAccessor $temporal The temporal object to convert
+     *
+     * @return self
+     */
+    public static function from(TemporalAccessor $temporal): self
+    {
+        return new self(
+            $temporal->get(ChronoField::YEAR())
+        );
+    }
 
     /**
      * Checks if the year is a leap year, according to the ISO calendar system rules.
@@ -344,7 +365,7 @@ final class Year implements Temporal, ObjectInterface, ComparableInterface
     }
 
     /**
-     * @return EnumMap|array<ChronoField, bool>
+     * @return EnumMap|array<ChronoUnit, bool>
      */
     private function getUnitMap(): EnumMap
     {
