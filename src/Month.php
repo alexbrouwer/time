@@ -74,6 +74,26 @@ final class Month extends Enum implements TemporalAccessor
     private $value;
 
     /**
+     * Obtains an instance of Month from a temporal object.
+     *
+     * This obtains a month based on the specified temporal. A TemporalAccessor represents an arbitrary set of date and
+     * time information, which this factory converts to an instance of Month.
+     *
+     * The conversion extracts the MONTH_OF_YEAR field. The extraction is only permitted if the temporal object has an
+     * ISO chronology, or can be converted to a LocalDate.
+     *
+     * @param TemporalAccessor $temporal The temporal object to convert
+     *
+     * @return self
+     */
+    public static function from(TemporalAccessor $temporal): self
+    {
+        return self::of(
+            $temporal->get(ChronoField::MONTH_OF_YEAR())
+        );
+    }
+
+    /**
      * Obtains an instance of DayOfWeek from an implementation of the DateTimeInterface.
      *
      * @param DateTimeInterface $dateTime The datetime to convert
@@ -103,11 +123,63 @@ final class Month extends Enum implements TemporalAccessor
     }
 
     /**
-     * @param int $value
+     * Gets the day-of-year corresponding to the first day of this month.
+     *
+     * This returns the day-of-year that this month begins on, using the leap year flag to determine the length of February.
+     *
+     * @param bool $leapYear True if the length is required for a leap year
+     *
+     * @return int
      */
-    protected function __construct(int $value)
+    public function firstDayOfYear(bool $leapYear = false): int
     {
-        $this->value = $value;
+        $firstDay = 1;
+
+        foreach (self::values() as $month) {
+            /** @var self $month */
+            if ($month->compareTo($this) < 0) {
+                $firstDay += $month->length($leapYear);
+            }
+        }
+
+        return $firstDay;
+    }
+
+    /**
+     * Gets the month corresponding to the first month of this quarter.
+     *
+     * The year can be divided into four quarters. This method returns the first month of the quarter for the base
+     * month. January, February and March return January. April, May and June return April. July, August and
+     * September return July. October, November and December return October.
+     *
+     * @return Month
+     */
+    public function firstMonthOfQuarter(): self
+    {
+        if ($this->getValue() >= 10) {
+            return self::OCTOBER();
+        }
+
+        if ($this->getValue() >= 7) {
+            return self::JULY();
+        }
+
+        if ($this->getValue() >= 4) {
+            return self::APRIL();
+        }
+
+        return self::JANUARY();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function get(TemporalField $field): int
+    {
+        if ($this->supportsField($field)) {
+            return $this->getValue();
+        }
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 
     /**
@@ -118,6 +190,52 @@ final class Month extends Enum implements TemporalAccessor
     public function getValue(): int
     {
         return $this->value;
+    }
+
+    /**
+     * Gets the length of this month in days.
+     *
+     * This takes a flag to determine whether to return the length for a leap year or not.
+     *
+     * February has 28 days in a standard year and 29 days in a leap year. April, June, September and November have 30
+     * days. All other months have 31 days.
+     *
+     * @param bool $leapYear True if the length is required for a leap year
+     *
+     * @return int
+     */
+    public function length(bool $leapYear): int
+    {
+        $days = [
+            31,
+            $leapYear ? 29 : 28,
+            31,
+            30,
+            31,
+            30,
+            31,
+            31,
+            30,
+            31,
+            30,
+            31,
+        ];
+
+        return $days[$this->ordinal()];
+    }
+
+    /**
+     * Returns the month-of-year that is the specified number of months before this one.
+     *
+     * The calculation rolls around the start of the year from January to December. The specified period may be negative.
+     *
+     * @param int $months The months to subtract, positive or negative
+     *
+     * @return Month
+     */
+    public function minus(int $months): self
+    {
+        return $this->plus($months * -1);
     }
 
     /**
@@ -157,101 +275,6 @@ final class Month extends Enum implements TemporalAccessor
     }
 
     /**
-     * Returns the month-of-year that is the specified number of months before this one.
-     *
-     * The calculation rolls around the start of the year from January to December. The specified period may be negative.
-     *
-     * @param int $months The months to subtract, positive or negative
-     *
-     * @return Month
-     */
-    public function minus(int $months): self
-    {
-        return $this->plus($months * -1);
-    }
-
-    /**
-     * Gets the month corresponding to the first month of this quarter.
-     *
-     * The year can be divided into four quarters. This method returns the first month of the quarter for the base
-     * month. January, February and March return January. April, May and June return April. July, August and
-     * September return July. October, November and December return October.
-     *
-     * @return Month
-     */
-    public function firstMonthOfQuarter(): self
-    {
-        if ($this->getValue() >= 10) {
-            return self::OCTOBER();
-        }
-
-        if ($this->getValue() >= 7) {
-            return self::JULY();
-        }
-
-        if ($this->getValue() >= 4) {
-            return self::APRIL();
-        }
-
-        return self::JANUARY();
-    }
-
-    /**
-     * Gets the length of this month in days.
-     *
-     * This takes a flag to determine whether to return the length for a leap year or not.
-     *
-     * February has 28 days in a standard year and 29 days in a leap year. April, June, September and November have 30
-     * days. All other months have 31 days.
-     *
-     * @param bool $leapYear True if the length is required for a leap year
-     *
-     * @return int
-     */
-    public function length(bool $leapYear): int
-    {
-        $days = [
-            31,
-            $leapYear ? 29 : 28,
-            31,
-            30,
-            31,
-            30,
-            31,
-            31,
-            30,
-            31,
-            30,
-            31,
-        ];
-
-        return $days[$this->ordinal()];
-    }
-
-    /**
-     * Gets the day-of-year corresponding to the first day of this month.
-     *
-     * This returns the day-of-year that this month begins on, using the leap year flag to determine the length of February.
-     *
-     * @param bool $leapYear True if the length is required for a leap year
-     *
-     * @return int
-     */
-    public function firstDayOfYear(bool $leapYear = false): int
-    {
-        $firstDay = 1;
-
-        foreach (self::values() as $month) {
-            /** @var self $month */
-            if ($month->compareTo($this) < 0) {
-                $firstDay += $month->length($leapYear);
-            }
-        }
-
-        return $firstDay;
-    }
-
-    /**
      * Checks if the specified field is supported.
      *
      * This checks if this month-of-year can be queried for the specified field. If false, then calling the range and
@@ -270,13 +293,10 @@ final class Month extends Enum implements TemporalAccessor
     }
 
     /**
-     * @inheritDoc
+     * @param int $value
      */
-    public function get(TemporalField $field): int
+    protected function __construct(int $value)
     {
-        if ($this->supportsField($field)) {
-            return $this->getValue();
-        }
-        throw UnsupportedTemporalTypeException::forField($field);
+        $this->value = $value;
     }
 }
