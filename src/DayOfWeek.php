@@ -59,6 +59,24 @@ final class DayOfWeek extends Enum implements TemporalAccessor
     private $value;
 
     /**
+     * Obtains an instance of DayOfWeek from a temporal object.
+     * This obtains a day-of-week based on the specified temporal. A TemporalAccessor represents an arbitrary set of
+     * date and time information, which this factory converts to an instance of DayOfWeek.
+     *
+     * The conversion extracts the DAY_OF_WEEK field.
+     *
+     * @param TemporalAccessor $temporal The temporal object to convert
+     *
+     * @return self
+     */
+    public static function from(TemporalAccessor $temporal): self
+    {
+        return self::of(
+            $temporal->get(ChronoField::DAY_OF_WEEK())
+        );
+    }
+
+    /**
      * Obtains an instance of DayOfWeek from  an implementation of the DateTimeInterface.
      *
      * @param DateTimeInterface $dateTime The datetime to convert
