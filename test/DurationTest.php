@@ -10,6 +10,7 @@ use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Duration;
 use PAR\Time\Exception\DateTimeException;
+use PAR\Time\Exception\InvalidFormatException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\TemporalAmount;
 
@@ -508,7 +509,7 @@ class DurationTest extends MockeryTestCase
 
     public function testParseWillThrowDateTimeExceptionWhenInvalidText(): void
     {
-        $this->expectException(DateTimeException::class);
+        $this->expectException(InvalidFormatException::class);
 
         Duration::parse('P1YT1H');
     }

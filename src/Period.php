@@ -5,7 +5,7 @@ namespace PAR\Time;
 use PAR\Core\Helper\InstanceHelper;
 use PAR\Core\ObjectInterface;
 use PAR\Time\Chrono\ChronoUnit;
-use PAR\Time\Exception\DateTimeException;
+use PAR\Time\Exception\InvalidFormatException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\Temporal;
 use PAR\Time\Temporal\TemporalAmount;
@@ -139,11 +139,12 @@ final class Period implements TemporalAmount, ObjectInterface
      * @param string $text The text to parse
      *
      * @return self
+     * @throws InvalidFormatException If the text cannot be parsed to a period
      */
     public static function parse(string $text): self
     {
         if (!preg_match('/^(?<signed>-|\+)?P(?!$)(?<years>[-\+]?\d+Y)?(?<months>[-\+]?\d+M)?(?<weeks>[-\+]?\d+W)?(?<days>[-\+]?\d+D)?$/', $text, $matches)) {
-            throw new DateTimeException(sprintf('Invalid ISO-8601 period string, got "%s"', $text));
+            throw InvalidFormatException::of('ISO-8601 period', $text);
         }
 
         $period = self::zero();

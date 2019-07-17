@@ -10,6 +10,7 @@ use PAR\Core\Helper\InstanceHelper;
 use PAR\Core\ObjectInterface;
 use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\DateTimeException;
+use PAR\Time\Exception\InvalidFormatException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\Temporal;
 use PAR\Time\Temporal\TemporalAmount;
@@ -231,7 +232,7 @@ final class Duration implements TemporalAmount, ObjectInterface, ComparableInter
      * @param string $text The text to parse
      *
      * @return Duration
-     * @throws DateTimeException If the text cannot be parsed to a duration
+     * @throws InvalidFormatException If the text cannot be parsed to a duration
      */
     public static function parse(string $text): self
     {
@@ -241,7 +242,7 @@ final class Duration implements TemporalAmount, ObjectInterface, ComparableInter
             $matches
         )
         ) {
-            throw new DateTimeException(sprintf('Invalid ISO-8601 duration string, got "%s"', $text));
+            throw InvalidFormatException::of('ISO-8601 duration', $text);
         }
 
         $duration = self::zero();

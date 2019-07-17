@@ -7,7 +7,7 @@ use PAR\Core\PHPUnit\CoreAssertions;
 use PAR\Enum\EnumMap;
 use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Duration;
-use PAR\Time\Exception\DateTimeException;
+use PAR\Time\Exception\InvalidFormatException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\LocalDate;
 use PAR\Time\Period;
@@ -258,7 +258,7 @@ class PeriodTest extends TestCase
 
     public function testCreateFromStringThrowsExceptionWhenTextInWrongFormat(): void
     {
-        $this->expectException(DateTimeException::class);
+        $this->expectException(InvalidFormatException::class);
 
         Period::parse('abc');
     }
