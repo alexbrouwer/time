@@ -73,7 +73,7 @@ final class LocalDate implements Temporal, ObjectInterface, ComparableInterface
      * @param int $year      The year to represent
      * @param int $dayOfYear The day-of-year to represent, from 1 to 366
      *
-     * @return LocalDate
+     * @return self
      */
     public static function ofYearDay(int $year, int $dayOfYear): self
     {
@@ -175,7 +175,7 @@ final class LocalDate implements Temporal, ObjectInterface, ComparableInterface
      *
      * @param int $years The years to subtract, may be negative
      *
-     * @return LocalDate
+     * @return self
      */
     public function minusYears(int $years): self
     {
