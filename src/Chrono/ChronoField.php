@@ -45,7 +45,7 @@ final class ChronoField extends Enum implements TemporalField
     /**
      * @var array
      */
-    private $rangeValues;
+    private $defaultRangeValues;
 
     /**
      * @inheritDoc
@@ -106,22 +106,27 @@ final class ChronoField extends Enum implements TemporalField
      */
     public function range(): ValueRange
     {
-        if (empty($this->rangeValues)) {
-            $this->rangeValues = [PHP_INT_MIN, PHP_INT_MAX];
+        if (empty($this->defaultRangeValues)) {
+            $this->defaultRangeValues = [PHP_INT_MIN, PHP_INT_MAX];
         }
 
+        return $this->createRange($this->defaultRangeValues);
+    }
+
+    private function createRange(array $values): ValueRange
+    {
         $method = 'ofFixed';
-        if (count($this->rangeValues) >= 4) {
+        if (count($values) >= 4) {
             $method = 'ofVariable';
         }
-        if (count($this->rangeValues) >= 3) {
+        if (count($values) >= 3) {
             $method = 'ofVariableMax';
         }
 
         /** @var callable $callable */
         $callable = [ValueRange::class, $method];
 
-        return forward_static_call_array($callable, $this->rangeValues);
+        return forward_static_call_array($callable, $values);
     }
 
     /**
@@ -134,7 +139,7 @@ final class ChronoField extends Enum implements TemporalField
     {
         $this->baseUnit = $baseUnit;
         $this->rangeUnit = $rangeUnit;
-        $this->rangeValues = $rangeValues;
+        $this->defaultRangeValues = $rangeValues;
         $this->format = $format;
     }
 }
