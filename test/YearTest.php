@@ -38,7 +38,10 @@ class YearTest extends TimeTestCase
             ChronoField::YEAR(),
         ];
 
-        return SupportedProvider::fields($supported);
+        $map = ChronoFieldHelper::createMapWithAll('bool', false);
+        $map = ChronoFieldHelper::updateAllIn($map, $supported, true);
+
+        return ChronoFieldHelper::toProviderArray($map);
     }
 
     public function testAddingUnsupportedUnitThrowsException(): void
