@@ -133,8 +133,11 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function atDay(int $dayOfMonth): LocalDate
     {
-        // TODO implement
-        return LocalDate::of(0, 1, 1);
+        if (!$this->isValidDay($dayOfMonth)) {
+            throw InvalidDateException::of($this->year, $this->month, $dayOfMonth);
+        }
+
+        return LocalDate::of($this->year, $this->month, $dayOfMonth);
     }
 
     /**
@@ -147,8 +150,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function atEndOfMonth(): LocalDate
     {
-        // TODO implement
-        return LocalDate::of(0, 1, 1);
+        return LocalDate::of($this->year, $this->month, $this->lengthOfMonth());
     }
 
     /**
@@ -244,8 +246,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function isAfter(YearMonth $other): bool
     {
-        // TODO: Implement
-        return false;
+        return $this->compareTo($other) > 0;
     }
 
     /**
@@ -257,8 +258,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function isBefore(YearMonth $other): bool
     {
-        // TODO: Implement
-        return false;
+        return $this->compareTo($other) < 0;
     }
 
     /**
@@ -282,20 +282,31 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function isValidDay(int $dayOfMonth): bool
     {
-        // TODO: Implement
-        return false;
+        return Factory::isValidDate($this->year, $this->month, $dayOfMonth);
     }
 
+    /**
+     * Returns the length of the month, taking account of the year.
+     *
+     * @return int
+     */
     public function lengthOfMonth(): int
     {
-        // TODO: Implement
-        return 0;
+        $dt = Factory::createDate($this->year, $this->month, 1);
+
+        return ChronoField::DAY_OF_MONTH()->getFromNative($dt->modify('last day of this month'));
     }
 
+    /**
+     * Returns the length of the year.
+     *
+     * @see Year::length
+     *
+     * @return int
+     */
     public function lengthOfYear(): int
     {
-        // TODO: Implement
-        return 0;
+        return Year::of($this->year)->length();
     }
 
     /**
@@ -395,7 +406,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function toString(): string
     {
-        return sprintf('%s-%s', $this->year, $this->month);
+        return sprintf('%d-%02d', $this->year, $this->month);
     }
 
     /**
