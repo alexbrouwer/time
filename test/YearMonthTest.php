@@ -73,6 +73,7 @@ class YearMonthTest extends TimeTestCase
         $yearMonth = YearMonth::of(2000, 5);
 
         self::assertSameObject(YearMonth::of(2000, 6), $yearMonth->withMonth(6));
+        self::assertSameObject(YearMonth::of(2000, 6), $yearMonth->with(ChronoField::MONTH_OF_YEAR(), 6));
     }
 
     public function testCanChangeYear(): void
@@ -80,6 +81,7 @@ class YearMonthTest extends TimeTestCase
         $yearMonth = YearMonth::of(2000, 5);
 
         self::assertSameObject(YearMonth::of(2001, 5), $yearMonth->withYear(2001));
+        self::assertSameObject(YearMonth::of(2001, 5), $yearMonth->with(ChronoField::YEAR(), 2001));
     }
 
     public function testCanCreateFromNow(): void
