@@ -2,11 +2,16 @@
 
 namespace PAR\Time;
 
+use DateTimeInterface;
 use PAR\Core\ComparableInterface;
 use PAR\Core\Exception\ClassMismatchException;
 use PAR\Core\ObjectInterface;
+use PAR\Enum\EnumMap;
+use PAR\Time\Chrono\ChronoField;
+use PAR\Time\Chrono\ChronoUnit;
 use PAR\Time\Exception\InvalidDateException;
 use PAR\Time\Exception\InvalidFormatException;
+use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Temporal\Temporal;
 use PAR\Time\Temporal\TemporalAccessor;
 use PAR\Time\Temporal\TemporalAmount;
@@ -18,6 +23,16 @@ use PAR\Time\Temporal\TemporalUnit;
  */
 final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
 {
+    /**
+     * @var EnumMap|null
+     */
+    private static $units;
+
+    /**
+     * @var EnumMap|null
+     */
+    private static $fields;
+
     /**
      * @var int
      */
@@ -38,21 +53,26 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      *
      * @param TemporalAccessor $temporal The temporal object to convert
      *
-     * @return YearMonth
+     * @return self
      */
     public static function from(TemporalAccessor $temporal): self
     {
-        // TODO implement from()
+        return new self(
+            $temporal->get(ChronoField::YEAR()),
+            $temporal->get(ChronoField::MONTH_OF_YEAR())
+        );
     }
 
     /**
      * Obtains the current year-month from the system clock in the default time-zone.
      *
-     * @return YearMonth
+     * @return self
      */
     public static function now(): self
     {
-        // TODO implement now()
+        $now = Factory::now();
+
+        return self::ofNative($now);
     }
 
     /**
@@ -61,11 +81,26 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      * @param int $year  The year to represent
      * @param int $month The month-of-year to represent
      *
-     * @return YearMonth
+     * @return self
      */
     public static function of(int $year, int $month): self
     {
         return new self($year, $month);
+    }
+
+    /**
+     * Obtains an instance of YearMonth from an implementation of the DateTimeInterface.
+     *
+     * @param DateTimeInterface $dateTime The datetime to convert
+     *
+     * @return self
+     */
+    public static function ofNative(DateTimeInterface $dateTime): self
+    {
+        return new self(
+            ChronoField::YEAR()->getFromNative($dateTime),
+            ChronoField::MONTH_OF_YEAR()->getFromNative($dateTime)
+        );
     }
 
     /**
@@ -75,12 +110,13 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      *
      * @param string $text The text to parse such as "2007-12"
      *
-     * @return YearMonth
+     * @return self
      * @throws InvalidFormatException If the text cannot be parsed to a duration
      */
     public static function parse(string $text): self
     {
         // TODO implement now()
+        return new self(0, 1);
     }
 
     /**
@@ -98,6 +134,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function atDay(int $dayOfMonth): LocalDate
     {
         // TODO implement
+        return LocalDate::of(0, 1, 1);
     }
 
     /**
@@ -111,6 +148,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function atEndOfMonth(): LocalDate
     {
         // TODO implement
+        return LocalDate::of(0, 1, 1);
     }
 
     /**
@@ -123,6 +161,8 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
             if ($yearDiff === 0) {
                 return $this->month - $other->month;
             }
+
+            return $yearDiff;
         }
 
         throw ClassMismatchException::expectedInstance($this, $other);
@@ -145,7 +185,17 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function get(TemporalField $field): int
     {
-        // TODO: Implement
+        if ($this->supportsField($field)) {
+            if (ChronoField::YEAR()->equals($field)) {
+                return $this->getYear();
+            }
+
+            if (ChronoField::MONTH_OF_YEAR()->equals($field)) {
+                return $this->getMonthValue();
+            }
+        }
+
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 
     /**
@@ -157,7 +207,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function getMonth(): Month
     {
-        // TODO: Implement
+        return Month::of($this->month);
     }
 
     /**
@@ -170,7 +220,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function getMonthValue(): int
     {
-        return $this->getMonth()->getValue();
+        return $this->month;
     }
 
     /**
@@ -182,7 +232,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function getYear(): int
     {
-        // TODO: Implement
+        return $this->year;
     }
 
     /**
@@ -195,6 +245,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function isAfter(YearMonth $other): bool
     {
         // TODO: Implement
+        return false;
     }
 
     /**
@@ -207,6 +258,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function isBefore(YearMonth $other): bool
     {
         // TODO: Implement
+        return false;
     }
 
     /**
@@ -231,16 +283,19 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function isValidDay(int $dayOfMonth): bool
     {
         // TODO: Implement
+        return false;
     }
 
     public function lengthOfMonth(): int
     {
         // TODO: Implement
+        return 0;
     }
 
     public function lengthOfYear(): int
     {
         // TODO: Implement
+        return 0;
     }
 
     /**
@@ -251,6 +306,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function minus(int $amountToSubtract, TemporalUnit $unit): self
     {
         // TODO: Implement minus() method.
+        return $this;
     }
 
     /**
@@ -261,16 +317,19 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function minusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement minusAmount() method.
+        return $this;
     }
 
     public function minusMonths(int $months): self
     {
         // TODO: Implement
+        return $this;
     }
 
     public function minusYears(int $years): self
     {
         // TODO: Implement
+        return $this;
     }
 
     /**
@@ -281,6 +340,7 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function plus(int $amountToAdd, TemporalUnit $unit): self
     {
         // TODO: Implement plus() method.
+        return $this;
     }
 
     /**
@@ -291,16 +351,19 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function plusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement plusAmount() method.
+        return $this;
     }
 
     public function plusMonths(int $months): self
     {
         // TODO: Implement
+        return $this;
     }
 
     public function plusYears(int $years): self
     {
         // TODO: Implement
+        return $this;
     }
 
     /**
@@ -308,7 +371,11 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function supportsField(TemporalField $field): bool
     {
-        // TODO: Implement supportsField() method.
+        if ($field instanceof ChronoField) {
+            return $this->getFieldMap()->containsKey($field);
+        }
+
+        return $field->isSupportedBy($this);
     }
 
     /**
@@ -316,7 +383,11 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function supportsUnit(TemporalUnit $unit): bool
     {
-        // TODO: Implement supportsUnit() method.
+        if ($unit instanceof ChronoUnit) {
+            return $this->getUnitMap()->containsKey($unit);
+        }
+
+        return $unit->isSupportedBy($this);
     }
 
     /**
@@ -337,7 +408,16 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
      */
     public function with(TemporalField $field, int $newValue): self
     {
-        // TODO: Implement
+        if ($this->supportsField($field)) {
+            if (ChronoField::YEAR()->equals($field)) {
+                return $this->withYear($newValue);
+            }
+            if (ChronoField::MONTH_OF_YEAR()->equals($field)) {
+                return $this->withMonth($newValue);
+            }
+        }
+
+        throw UnsupportedTemporalTypeException::forField($field);
     }
 
     /**
@@ -362,6 +442,46 @@ final class YearMonth implements Temporal, ObjectInterface, ComparableInterface
     public function withYear(int $year): self
     {
         return new self($year, $this->month);
+    }
+
+    /**
+     * @return EnumMap
+     */
+    private function getUnitMap(): EnumMap
+    {
+        if (!static::$units) {
+            $map = EnumMap::for(ChronoUnit::class, 'bool', false);
+
+            $supported = [
+                ChronoUnit::YEARS(),
+                ChronoUnit::DECADES(),
+                ChronoUnit::CENTURIES(),
+                ChronoUnit::MILLENNIA(),
+            ];
+
+            static::$units = EnumMapHelper::putAllTrue($map, $supported);
+        }
+
+        return static::$units;
+    }
+
+    /**
+     * @return EnumMap
+     */
+    private function getFieldMap(): EnumMap
+    {
+        if (!static::$fields) {
+            $map = EnumMap::for(ChronoField::class, 'bool', false);
+
+            $supported = [
+                ChronoField::YEAR(),
+                ChronoField::MONTH_OF_YEAR(),
+            ];
+
+            static::$fields = EnumMapHelper::putAllTrue($map, $supported);
+        }
+
+        return static::$fields;
     }
 
     /**

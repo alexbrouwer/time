@@ -20,6 +20,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function compareTo(ComparableInterface $other): int
     {
         // TODO: Implement compareTo() method.
+        return 0;
     }
 
     /**
@@ -28,6 +29,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function equals($other): bool
     {
         // TODO: Implement equals() method.
+        return false;
     }
 
     /**
@@ -36,6 +38,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function get(TemporalField $field): int
     {
         // TODO: Implement get() method.
+        return 0;
     }
 
     /**
@@ -45,6 +48,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function minus(int $amountToSubtract, TemporalUnit $unit): self
     {
         // TODO: Implement minus() method.
+        return $this;
     }
 
     /**
@@ -54,6 +58,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function minusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement minusAmount() method.
+        return $this;
     }
 
     /**
@@ -63,6 +68,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function plus(int $amountToAdd, TemporalUnit $unit): self
     {
         // TODO: Implement plus() method.
+        return $this;
     }
 
     /**
@@ -72,6 +78,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function plusAmount(TemporalAmount $amount): self
     {
         // TODO: Implement plusAmount() method.
+        return $this;
     }
 
     /**
@@ -80,6 +87,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function supportsField(TemporalField $field): bool
     {
         // TODO: Implement supportsField() method.
+        return false;
     }
 
     /**
@@ -88,6 +96,7 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function supportsUnit(TemporalUnit $unit): bool
     {
         // TODO: Implement supportsUnit() method.
+        return false;
     }
 
     /**
@@ -96,5 +105,6 @@ final class LocalDateTime implements Temporal, ObjectInterface, ComparableInterf
     public function toString(): string
     {
         // TODO: Implement toString() method.
+        return '';
     }
 }

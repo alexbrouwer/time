@@ -4,8 +4,10 @@ namespace PARTest\Time;
 
 use Mockery;
 use PAR\Core\PHPUnit\CoreAssertions;
+use PAR\Enum\EnumMap;
 use PAR\Time\Chrono\ChronoField;
 use PAR\Time\Chrono\ChronoUnit;
+use PAR\Time\EnumMapHelper;
 use PAR\Time\Exception\InvalidArgumentException;
 use PAR\Time\Exception\UnsupportedTemporalTypeException;
 use PAR\Time\Factory;
@@ -38,10 +40,11 @@ class YearTest extends TimeTestCase
             ChronoField::YEAR(),
         ];
 
-        $map = ChronoFieldHelper::createMapWithAll('bool', false);
-        $map = ChronoFieldHelper::updateAllIn($map, $supported, true);
+        $map = EnumMap::for(ChronoField::class, 'bool', false);
 
-        return ChronoFieldHelper::toProviderArray($map);
+        EnumMapHelper::putAllTrue($map, $supported);
+
+        return EnumMapHelper::toProviderArray($map);
     }
 
     public function testAddingUnsupportedUnitThrowsException(): void

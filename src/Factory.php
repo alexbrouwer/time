@@ -16,6 +16,9 @@ final class Factory
     public const YESTERDAY = 'yesterday, midnight';
     public const TOMORROW = 'tomorrow, midnight';
 
+    /**
+     * @var string
+     */
     private static $relativePattern = '/this|next|previous|tomorrow|yesterday|midnight|today|[+-]|first|last|ago/i';
 
     /**
@@ -272,7 +275,7 @@ final class Factory
             return $testNow;
         } catch (GlobalException $e) {
             // Transform it into an exception we are more likely to ignore in our IDE
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidArgumentException($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 
